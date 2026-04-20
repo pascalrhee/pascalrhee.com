@@ -1,0 +1,39 @@
+# [Date] — [Short session title]
+
+## Goal
+What I want to accomplish in this session. One or two sentences.
+Should be concrete enough that I'll know if I hit it.
+
+## Why now
+Why this is the right thing to work on today, given where the
+project is. One sentence is fine.
+
+## Approach
+How I plan to tackle it. Rough steps or a loose outline.
+Not a detailed spec — just enough that future-me can see what
+I was thinking.
+
+## Done for today looks like
+The stopping condition. What has to be true for me to close
+the laptop without guilt. Should be modest — "understanding X
+conceptually" counts as done.
+
+## Open questions going in
+Things I'm unsure about that might come up. Writing them down
+surfaces them for the session.
+
+---
+
+## After the session
+
+### What actually happened
+Brief factual summary. What got built, what got cut, what
+surprised me.
+
+### Delta from the plan
+Where reality diverged from the plan and why. Not self-criticism
+— just noticing.
+
+### Carried forward
+Anything that didn't get done but shouldn't be forgotten. These
+feed into the next plan.
