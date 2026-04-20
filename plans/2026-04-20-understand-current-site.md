@@ -21,6 +21,13 @@ Close the gap between "AI generated my site" and "I understand my site." Walk th
 - Learned the full deployment chain: git push → webhook → Cloudflare pulls → builds → CDN
 - Learned that Astro is a build-time tool (static site generator), not a request-time tool — site stays on Pages
 
+## Session 2 (continued)
+
+- Covered "why Astro at all" — the duplication problem, framework only pays off with multiple pages
+- Covered "why Astro over Next.js" — static-first vs app-first, zero JS vs JS-owns-everything
+- Covered Astro's island model — static ocean with isolated interactive components
+- All three concepts verified via testing
+
 ## What's Next
 1. **Initialize Astro** — scaffold the project, understand the file structure and what each piece does at the systems level
 2. **Migrate index.html into Astro** — turn the static HTML into Astro components, understand how components compose
