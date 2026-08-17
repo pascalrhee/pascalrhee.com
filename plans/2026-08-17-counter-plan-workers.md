@@ -1,7 +1,7 @@
 ---
 session: 2026-08-17-counter-plan-workers
 goal: build a 24h page-view counter on Workers with Assets
-status: planned
+status: done
 ---
 
 ## Context
