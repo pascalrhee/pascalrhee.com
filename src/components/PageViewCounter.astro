@@ -1,0 +1,29 @@
+---
+---
+<span data-pulse><span class="label">PULSE</span><span data-pulse-value>—</span></span>
+
+<script is:inline>
+  (() => {
+    const line = document.querySelector('[data-pulse]');
+    const value = line?.querySelector('[data-pulse-value]');
+    if (!line || !value) return;
+
+    // Fire-and-forget increment. Failures don't block rendering.
+    fetch('/api/track', { method: 'POST' }).catch(() => {});
+
+    // Read current 24h count and render if visible.
+    fetch('/api/views')
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then(({ count, visible }) => {
+        if (visible) {
+          value.textContent = `${count} load${count === 1 ? '' : 's'} · past 24h`;
+        } else {
+          line.remove();
+        }
+      })
+      .catch(() => {
+        // Silent failure — a broken counter shouldn't degrade the page.
+        line.remove();
+      });
+  })();
+</script>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageViewCounter from '../components/PageViewCounter.astro';
 ---
 <BaseLayout>
   <section class="content">
@@ -12,9 +13,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </p>
 
     <div class="meta">
-      <span><span class="label">STATUS</span>domain claimed · site under construction</span>
-      <span><span class="label">STACK</span>astro · cloudflare pages · claude code</span>
-      <span><span class="label">NEXT</span>first real commit</span>
+      <span><span class="label">STATUS</span>domain claimed · under construction</span>
+      <span><span class="label">STACK</span>astro · cloudflare workers · claude code</span>
+      <span><span class="label">NEXT</span>real content</span>
+      <PageViewCounter />
     </div>
   </section>
 </BaseLayout>
