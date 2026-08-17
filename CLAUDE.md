@@ -1,6 +1,6 @@
 # Pascal's Personal Website
 
-A personal site being built with Astro on Cloudflare Pages. Currently a single `index.html` landing page; Astro migration is the next major step.
+A personal site being built with Astro on Cloudflare Workers with Assets (deployed via `wrangler`). The single `index.html` landing page has been migrated to an Astro layout + page; deploy pipeline is next.
 
 ## This Is a Learning Project
 
@@ -15,6 +15,10 @@ This means:
 - After writing, explain **what a block does and why**, briefly. Skip line-by-line unless I ask.
 - Before introducing a new technology, **explain what problem it solves and why we're reaching for it** — the strategic pitch, not the mechanics. Skip the system map unless a decision hinges on it.
 - Save architecture and code-level detail for when I specifically ask.
+
+## Communication Style
+
+Lead with an **executive summary** when a response has substance — 2–4 lines up top saying what you did, what I need to know, and what's next. Skip it for one-liners or when the whole response *is* the summary.
 
 ## Decision-Making
 
@@ -36,6 +40,19 @@ When we optimize, we optimize in this priority order:
 4. **SEO** — nice to have, last to prioritize
 
 When these conflict, call it out explicitly and choose based on this order. Don't silently trade accessibility for design polish.
+
+## Cost Discipline
+
+This is a personal project with no budget. **Free tier is a hard constraint, not a preference** — it sits above the priority list, not inside it. If the only good version of something costs money, say so and let me decide; don't quietly pick the paid path.
+
+Rules:
+- **Default to free.** Cloudflare Workers free tier, free/open-source tooling, no paid APIs or SaaS.
+- **Flag anything that costs money before we build on it** — including "free tier now, bills later" traps: usage-based pricing, trials that auto-convert, free tiers with hard caps we could hit.
+- **Name the actual number.** "$5/mo" or "free up to 100k requests, then $X" — not "it's cheap."
+- **Watch for lock-in that becomes a cost.** A free service I can't leave without a rewrite is a future bill.
+- **When a paid option is genuinely better,** present it as an option with the price attached and a free alternative next to it. My call, not yours.
+
+Exception: domain registration and anything I've already explicitly approved.
 
 ## What I'm Trying to Learn
 
