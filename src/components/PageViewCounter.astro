@@ -1,21 +1,21 @@
 ---
 ---
-<div class="pulse" data-pulse>
-  <div class="pulse-number" data-pulse-value aria-live="polite">
-    <span class="pulse-placeholder" aria-hidden="true">·</span>
+<div class="attendance" data-attendance>
+  <div class="attendance-value" data-attendance-value aria-live="polite">
+    <span class="attendance-placeholder" aria-hidden="true">·</span>
   </div>
-  <div class="pulse-caption">
-    <span class="pulse-mark" aria-hidden="true">◆</span>
-    <span data-pulse-caption>past 24 hours</span>
+  <div class="attendance-caption">
+    <span class="attendance-label">Attendance</span>
+    <span class="attendance-window" data-attendance-window>past 24 hours</span>
   </div>
 </div>
 
 <script is:inline>
   (() => {
-    const line = document.querySelector('[data-pulse]');
-    const value = line?.querySelector('[data-pulse-value]');
-    const caption = line?.querySelector('[data-pulse-caption]');
-    if (!line || !value || !caption) return;
+    const line = document.querySelector('[data-attendance]');
+    const value = line?.querySelector('[data-attendance-value]');
+    const window = line?.querySelector('[data-attendance-window]');
+    if (!line || !value || !window) return;
 
     // Fire-and-forget: increment the current hour bucket.
     fetch('/api/track', { method: 'POST' }).catch(() => {});
@@ -29,7 +29,7 @@
           return;
         }
         value.textContent = String(count);
-        caption.textContent = `load${count === 1 ? '' : 's'} · past 24 hours`;
+        window.textContent = `past 24 hours · ${count === 1 ? '1 load' : count + ' loads'}`;
         line.classList.add('is-ready');
       })
       .catch(() => {
@@ -39,76 +39,74 @@
 </script>
 
 <style>
-  .pulse {
+  .attendance {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 2rem 0 2rem;
+    align-items: baseline;
+    gap: 1.75rem;
+    padding: 1.5rem 0 1.75rem;
     margin: 2rem 0 1rem;
+    border-top: 2px solid var(--blue);
+    border-bottom: 2px solid var(--blue);
     position: relative;
   }
 
-  /* A thin accent tick to the left, telegraphing "live signal". */
-  .pulse::before {
+  /* Maize hairline that rides just under the top blue rule — team stripe */
+  .attendance::before {
     content: "";
     position: absolute;
-    left: -1.25rem;
-    top: 2.75rem;
-    width: 0.75rem;
+    top: 4px;
+    left: 0;
+    right: 0;
     height: 1px;
-    background: var(--accent);
+    background: var(--maize);
   }
 
-  .pulse-number {
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 300;
+  .attendance-value {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-weight: 500;
     font-style: italic;
-    font-size: clamp(3.5rem, 11vw, 6rem);
+    font-size: clamp(3rem, 9vw, 5rem);
     line-height: 0.95;
     letter-spacing: -0.03em;
-    color: var(--accent);
+    color: var(--blue);
     opacity: 0.35;
     transform: translateY(6px);
     transition: opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
                 transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
   }
 
-  .pulse.is-ready .pulse-number {
+  .attendance.is-ready .attendance-value {
     opacity: 1;
     transform: translateY(0);
   }
 
-  .pulse-placeholder {
+  .attendance-placeholder {
     display: inline-block;
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
-  .pulse-caption {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+  .attendance-caption {
     display: flex;
-    align-items: center;
-    gap: 0.55rem;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
-  .pulse-mark {
-    color: var(--accent);
-    font-size: 0.55rem;
-    transform: translateY(-1px);
-    animation: pulse-heartbeat 3s ease-in-out infinite;
+  .attendance-label {
+    font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    font-size: 0.78rem;
+    color: var(--tan);
   }
 
-  @keyframes pulse-heartbeat {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
+  .attendance-window {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--blue);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .pulse-number { transition: none; opacity: 1; transform: none; }
-    .pulse-mark { animation: none; opacity: 0.8; }
+    .attendance-value { transition: none; opacity: 1; transform: none; }
   }
 </style>

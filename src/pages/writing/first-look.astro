@@ -1,0 +1,67 @@
+---
+import ProseLayout from '../../layouts/ProseLayout.astro';
+---
+<ProseLayout
+  title="A first look at the new place"
+  dek="What this site is, why it exists, and what it isn't."
+  date="2026-08-17"
+  readingTime="4 min"
+>
+  <p>
+    This is a small, quiet corner of the internet — a place for writing,
+    projects, and whatever accumulates over the years. It began as a single
+    HTML file, then grew a build step, then a hosting story, then a view
+    counter, and now this: a page you can read.
+  </p>
+
+  <p>
+    The pace here is intentional. There's no publishing schedule, no launch
+    date, no metrics to hit. What ships, ships when it's ready. What doesn't,
+    doesn't. If you find your way to something worth reading, that's the whole
+    point.
+  </p>
+
+  <h2>What you'll find</h2>
+
+  <p>
+    Mostly, writing — <em>essays</em> when I have the patience for them, and
+    <em>notes</em> when I don't. Projects when they're worth showing. An
+    <a href="/about/">about page</a> that doubles as a colophon, because how a
+    site is built often reveals more than what it says.
+  </p>
+
+  <blockquote>
+    The web used to be full of these — small, weird, personal sites tended by
+    one person, built for reasons that made sense only to them. It's still
+    possible to make one.
+  </blockquote>
+
+  <h2>How it's put together</h2>
+
+  <p>
+    The site is built with <a href="https://astro.build">Astro</a>, deployed as
+    a Cloudflare Worker with static assets, and served from the edge. The view
+    counter you see on the front page is a small <code>KV</code>-backed API
+    that runs in the same Worker as the static site — <strong>one deploy, one
+    artifact, one thing to reason about.</strong>
+  </p>
+
+  <p>
+    If any of that sounds interesting, the <a href="/about/">about page</a> has
+    a diagram and longer notes on the choices.
+  </p>
+
+  <hr />
+
+  <h3>What's next</h3>
+
+  <p>
+    A real first post — probably about the migration from a single HTML file
+    to Astro, which was the moment this project stopped being a novelty and
+    started being a habit.
+  </p>
+
+  <p>
+    See you around.
+  </p>
+</ProseLayout>

@@ -1,0 +1,204 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Placeholder post list. Replace with a content collection when real posts land.
+const posts = [
+  {
+    slug: 'first-look',
+    title: 'A first look at the new place',
+    dek: 'What this site is, why it exists, and what it isn\'t.',
+    date: '2026-08-17',
+    readingTime: '4 min',
+  },
+  {
+    slug: 'placeholder-two',
+    title: 'On building slowly, in the open',
+    dek: 'A note on why the pace here is intentional.',
+    date: '2026-07-22',
+    readingTime: '6 min',
+    disabled: true,
+  },
+  {
+    slug: 'placeholder-three',
+    title: 'Notes from a quiet corner',
+    dek: 'Small observations from a small internet.',
+    date: '2026-05-04',
+    readingTime: '3 min',
+    disabled: true,
+  },
+];
+
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+---
+<BaseLayout
+  title="Writing · Pascal Rhee"
+  description="Writing by Pascal Rhee — essays, notes, and the occasional half-formed thought."
+  section="writing"
+>
+  <section class="content">
+    <p class="kicker">Writing · in reverse chronological order</p>
+
+    <h1>Writing <span class="italic">from the record.</span></h1>
+
+    <p class="lede">
+      Essays, notes, and the occasional half-formed thought. Published when
+      finished, not when scheduled.
+    </p>
+
+    <ol class="post-list" reversed>
+      {posts.map((post) => (
+        <li class={`post-row ${post.disabled ? 'is-placeholder' : ''}`}>
+          <div class="post-row-date">{fmt(post.date)}</div>
+          <div class="post-row-body">
+            {post.disabled ? (
+              <span class="post-row-title">{post.title}</span>
+            ) : (
+              <a class="post-row-title" href={`/writing/${post.slug}/`}>{post.title}</a>
+            )}
+            <p class="post-row-dek">{post.dek}</p>
+          </div>
+          <div class="post-row-meta">
+            {post.disabled ? (
+              <span class="post-row-tag">Draft</span>
+            ) : (
+              <span class="post-row-tag published">Published</span>
+            )}
+            <span class="post-row-reading">{post.readingTime}</span>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <style>
+    .post-list {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-row {
+      display: grid;
+      grid-template-columns: 8rem 1fr auto;
+      gap: 2rem;
+      align-items: start;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--tan);
+      position: relative;
+    }
+    .post-row:first-child {
+      border-top: 2px solid var(--blue);
+    }
+    .post-row:first-child::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--maize);
+    }
+    .post-row:last-child {
+      border-bottom: 1px solid var(--tan);
+    }
+
+    .post-row-date {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      color: var(--blue);
+      padding-top: 0.35rem;
+    }
+
+    .post-row-title {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      font-size: 1.4rem;
+      line-height: 1.2;
+      color: var(--blue);
+      text-decoration: none;
+      border-bottom: none;
+      display: inline;
+      transition: background 0.2s;
+    }
+    a.post-row-title:hover {
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 25%,
+        transparent 25%
+      );
+    }
+
+    .post-row-dek {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.45;
+      color: var(--ink);
+      opacity: 0.85;
+      margin-top: 0.35rem;
+      max-width: 46ch;
+    }
+
+    .post-row-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.35rem;
+      padding-top: 0.35rem;
+    }
+
+    .post-row-tag {
+      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      font-size: 0.7rem;
+      color: var(--tan);
+    }
+    .post-row-tag.published {
+      color: var(--blue);
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 30%,
+        transparent 30%
+      );
+      padding: 0 0.35em;
+    }
+
+    .post-row-reading {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: var(--tan);
+    }
+
+    .post-row.is-placeholder .post-row-title {
+      color: var(--tan);
+      cursor: default;
+    }
+    .post-row.is-placeholder .post-row-date {
+      color: var(--tan);
+    }
+
+    @media (max-width: 640px) {
+      .post-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .post-row-meta {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.75rem;
+      }
+    }
+  </style>
+</BaseLayout>
