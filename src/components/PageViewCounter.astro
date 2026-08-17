@@ -1,29 +1,114 @@
 ---
 ---
-<span data-pulse><span class="label">PULSE</span><span data-pulse-value>—</span></span>
+<div class="pulse" data-pulse>
+  <div class="pulse-number" data-pulse-value aria-live="polite">
+    <span class="pulse-placeholder" aria-hidden="true">·</span>
+  </div>
+  <div class="pulse-caption">
+    <span class="pulse-mark" aria-hidden="true">◆</span>
+    <span data-pulse-caption>past 24 hours</span>
+  </div>
+</div>
 
 <script is:inline>
   (() => {
     const line = document.querySelector('[data-pulse]');
     const value = line?.querySelector('[data-pulse-value]');
-    if (!line || !value) return;
+    const caption = line?.querySelector('[data-pulse-caption]');
+    if (!line || !value || !caption) return;
 
-    // Fire-and-forget increment. Failures don't block rendering.
+    // Fire-and-forget: increment the current hour bucket.
     fetch('/api/track', { method: 'POST' }).catch(() => {});
 
-    // Read current 24h count and render if visible.
+    // Read the rolling 24h sum and render, or remove the whole line on failure.
     fetch('/api/views')
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then(({ count, visible }) => {
-        if (visible) {
-          value.textContent = `${count} load${count === 1 ? '' : 's'} · past 24h`;
-        } else {
+        if (!visible) {
           line.remove();
+          return;
         }
+        value.textContent = String(count);
+        caption.textContent = `load${count === 1 ? '' : 's'} · past 24 hours`;
+        line.classList.add('is-ready');
       })
       .catch(() => {
-        // Silent failure — a broken counter shouldn't degrade the page.
         line.remove();
       });
   })();
 </script>
+
+<style>
+  .pulse {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 2rem 0 2rem;
+    margin: 2rem 0 1rem;
+    position: relative;
+  }
+
+  /* A thin accent tick to the left, telegraphing "live signal". */
+  .pulse::before {
+    content: "";
+    position: absolute;
+    left: -1.25rem;
+    top: 2.75rem;
+    width: 0.75rem;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .pulse-number {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(3.5rem, 11vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    opacity: 0.35;
+    transform: translateY(6px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+                transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  .pulse.is-ready .pulse-number {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pulse-placeholder {
+    display: inline-block;
+    opacity: 0.5;
+  }
+
+  .pulse-caption {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .pulse-mark {
+    color: var(--accent);
+    font-size: 0.55rem;
+    transform: translateY(-1px);
+    animation: pulse-heartbeat 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-heartbeat {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-number { transition: none; opacity: 1; transform: none; }
+    .pulse-mark { animation: none; opacity: 0.8; }
+  }
+</style>

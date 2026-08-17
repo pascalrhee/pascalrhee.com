@@ -1,0 +1,379 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="About · Pascal Rhee"
+  description="How pascalrhee.com is built — a short colophon and architecture diagram."
+>
+  <article class="about-page">
+
+    <header class="page-heading">
+      <p class="kicker"><span class="label">ABOUT</span>this site</p>
+      <h1>
+        A personal home base,<br />
+        <span class="italic">built in public.</span>
+      </h1>
+    </header>
+
+    <section class="prose">
+      <p>
+        pascalrhee.com is a small, quiet corner of the internet — a place for
+        writing, projects, and whatever accumulates over the years. It's built
+        one session at a time, in the open. Every commit, every plan file, and
+        every journal entry lives next to the site's source in the same
+        <a href="https://github.com/pascalrhee/pascalrhee.com">GitHub repo</a>.
+      </p>
+      <p>
+        If you care how it's built, the map is below. If not,
+        <a href="/">go back to the front</a>.
+      </p>
+    </section>
+
+    <section class="architecture-section">
+      <p class="kicker"><span class="label">ARCHITECTURE</span>build → deploy → serve</p>
+
+      <figure class="diagram-figure">
+        <svg
+          viewBox="0 0 720 500"
+          class="diagram"
+          role="img"
+          aria-labelledby="arch-title arch-desc"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <title id="arch-title">Architecture of pascalrhee.com</title>
+          <desc id="arch-desc">
+            At build time, Astro compiles source files into a static dist folder,
+            which wrangler uploads to a Cloudflare Worker. At runtime, the Worker
+            receives every visitor request and either serves a static file from
+            the assets binding, or routes /api/track and /api/views to a KV
+            namespace that powers the view counter.
+          </desc>
+
+          <defs>
+            <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+            </marker>
+          </defs>
+
+          <!-- ─── BUILD TIME zone ─── -->
+          <text x="0" y="14" class="zone-label">BUILD TIME</text>
+
+          <!-- SRC -->
+          <text x="0" y="52" class="node-title">SRC</text>
+          <text x="0" y="72" class="mono-small">src/pages/</text>
+          <text x="0" y="90" class="mono-small">src/layouts/</text>
+          <text x="0" y="108" class="mono-small">src/components/</text>
+
+          <!-- SRC → astro build → DIST -->
+          <line x1="145" y1="80" x2="225" y2="80" class="edge" marker-end="url(#arrowhead)" />
+          <text x="185" y="72" class="edge-label" text-anchor="middle">astro build</text>
+
+          <!-- DIST -->
+          <text x="240" y="52" class="node-title">DIST/</text>
+          <text x="240" y="72" class="mono-small">index.html</text>
+          <text x="240" y="90" class="mono-small">about/index.html</text>
+          <text x="240" y="108" class="mono-small">/_astro/…</text>
+
+          <!-- DIST → wrangler → EDGE -->
+          <line x1="380" y1="80" x2="460" y2="80" class="edge" marker-end="url(#arrowhead)" />
+          <text x="420" y="72" class="edge-label" text-anchor="middle">wrangler deploy</text>
+
+          <!-- EDGE box (accent) -->
+          <rect x="470" y="45" width="215" height="75" rx="2" class="node-box accent-box" />
+          <text x="482" y="68" class="node-title accent">EDGE</text>
+          <text x="482" y="88" class="mono-small">pascalrhee-com Worker</text>
+          <text x="482" y="105" class="mono-small">+ assets binding + KV</text>
+
+          <!-- ─── divider ─── -->
+          <line x1="0" y1="160" x2="720" y2="160" class="zone-divider" />
+
+          <!-- ─── RUNTIME zone ─── -->
+          <text x="0" y="186" class="zone-label">RUNTIME</text>
+
+          <!-- VISITOR -->
+          <text x="0" y="228" class="node-title">VISITOR</text>
+          <text x="0" y="248" class="mono-small">GET pascalrhee.com/*</text>
+
+          <!-- VISITOR → WORKER.fetch -->
+          <line x1="155" y1="240" x2="280" y2="240" class="edge" marker-end="url(#arrowhead)" />
+
+          <!-- WORKER.fetch box (accent) -->
+          <rect x="290" y="210" width="185" height="65" rx="2" class="node-box accent-box" />
+          <text x="302" y="234" class="node-title accent">WORKER.fetch</text>
+          <text x="302" y="256" class="mono-small">src/worker/index.ts</text>
+
+          <!-- Branch labels (small, tucked between routes) -->
+          <!-- Branch 1: /api/track → KV (leftward) -->
+          <path d="M 320 275 L 320 305 L 145 305 L 145 348" class="edge" fill="none" marker-end="url(#arrowhead)" />
+          <text x="232" y="298" class="edge-label" text-anchor="middle">POST /api/track  (+1)</text>
+
+          <!-- Branch 2: /api/views → KV (mid, angled) -->
+          <path d="M 380 275 L 380 320 L 260 320 L 260 348" class="edge" fill="none" marker-end="url(#arrowhead)" />
+          <text x="400" y="312" class="edge-label">GET /api/views  (sum 24)</text>
+
+          <!-- Branch 3: /* → ASSETS (rightward) -->
+          <path d="M 440 275 L 440 305 L 610 305 L 610 348" class="edge" fill="none" marker-end="url(#arrowhead)" />
+          <text x="525" y="298" class="edge-label" text-anchor="middle">GET /*  (everything else)</text>
+
+          <!-- KV box (wide, under the two API branches) -->
+          <rect x="70" y="348" width="285" height="72" rx="2" class="node-box" />
+          <text x="82" y="371" class="node-title">VIEWS_KV</text>
+          <text x="82" y="391" class="mono-small">key: views:YYYY-MM-DDTHH</text>
+          <text x="82" y="408" class="mono-small">value: count · 30h TTL · rolling 24h</text>
+
+          <!-- ASSETS box -->
+          <rect x="540" y="348" width="150" height="72" rx="2" class="node-box" />
+          <text x="552" y="371" class="node-title">env.ASSETS</text>
+          <text x="552" y="391" class="mono-small">serves dist/</text>
+          <text x="552" y="408" class="mono-small">as static files</text>
+
+          <!-- ─── The "same artifact" line: DIST → ASSETS ─── -->
+          <!-- Subtle accent-dashed line showing that what Astro builds is what the Worker serves. -->
+          <path d="M 300 118 L 300 140 L 615 140 L 615 348" class="artifact-line" fill="none" />
+          <text x="465" y="134" class="edge-label subtle" text-anchor="middle">— same artifact —</text>
+
+        </svg>
+
+        <figcaption>
+          Two zones, one artifact. What Astro builds at compile time is what the
+          Worker serves at runtime — the dashed line is that same folder crossing
+          the boundary.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="stack-section">
+      <p class="kicker"><span class="label">STACK</span>choices, in longer form</p>
+
+      <dl class="stack-list">
+        <div class="stack-item">
+          <dt>Astro</dt>
+          <dd>
+            A content-site framework that compiles components and Markdown into
+            static HTML at build time. Zero JavaScript by default; islands opt
+            in only where interactivity is genuinely worth the bytes. Right
+            shape for a site that's mostly writing, sometimes clever.
+          </dd>
+        </div>
+        <div class="stack-item">
+          <dt>Cloudflare Workers with Assets</dt>
+          <dd>
+            Serves the static site from Cloudflare's global edge, and lets a
+            small piece of code — the view counter's API — live in the same
+            artifact instead of a second service. One deploy, one thing to
+            reason about.
+          </dd>
+        </div>
+        <div class="stack-item">
+          <dt>wrangler</dt>
+          <dd>
+            Cloudflare's CLI. One command bundles the Worker, uploads the built
+            HTML, and ships it worldwide. Also creates the KV namespace and
+            generates the TypeScript types that keep the Worker code honest.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+  </article>
+
+  <style>
+    /* ─── page layout ─── */
+    .about-page {
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+      padding: 3rem 0 4rem;
+    }
+
+    /* Staggered entrance, matching the landing page's rhythm */
+    .about-page > * {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rise-about 0.9s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+    }
+    .about-page > *:nth-child(1) { animation-delay: 0.10s; }
+    .about-page > *:nth-child(2) { animation-delay: 0.25s; }
+    .about-page > *:nth-child(3) { animation-delay: 0.40s; }
+    .about-page > *:nth-child(4) { animation-delay: 0.55s; }
+
+    @keyframes rise-about {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .about-page > * { animation: none; opacity: 1; transform: none; }
+    }
+
+    /* ─── kicker labels (echoes STATUS/STACK/NEXT on landing) ─── */
+    .kicker {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      color: var(--ink-soft);
+      margin-bottom: 0.75rem;
+    }
+    .kicker .label {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    /* ─── page heading ─── */
+    .page-heading h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 5.5vw, 3.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .page-heading h1 .italic {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* ─── prose ─── */
+    .prose {
+      max-width: 52ch;
+    }
+    .prose p {
+      font-size: clamp(1rem, 1.4vw, 1.15rem);
+      line-height: 1.65;
+      color: var(--ink-soft);
+    }
+    .prose p + p {
+      margin-top: 1rem;
+    }
+    .prose a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--accent);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .prose a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+
+    /* ─── diagram ─── */
+    .diagram-figure {
+      margin: 0;
+      padding: 0;
+    }
+
+    .diagram {
+      width: 100%;
+      height: auto;
+      display: block;
+      color: var(--ink-soft); /* controls arrow strokes via currentColor */
+      overflow: visible;
+    }
+
+    /* SVG child styles (using inline SVG so global classes apply) */
+    .diagram .zone-label {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      fill: var(--accent);
+    }
+    .diagram .node-title {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      fill: var(--ink);
+      text-transform: uppercase;
+    }
+    .diagram .node-title.accent {
+      fill: var(--accent);
+    }
+    .diagram .mono-small {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 10.5px;
+      fill: var(--ink-soft);
+    }
+    .diagram .edge-label {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 9.5px;
+      letter-spacing: 0.03em;
+      fill: var(--ink-soft);
+    }
+    .diagram .edge-label.subtle {
+      font-style: italic;
+      fill: var(--accent);
+      opacity: 0.75;
+    }
+    .diagram .node-box {
+      fill: var(--paper-deep);
+      stroke: var(--rule);
+      stroke-width: 1;
+    }
+    .diagram .accent-box {
+      stroke: var(--accent);
+      stroke-width: 1.25;
+    }
+    .diagram .zone-divider {
+      stroke: var(--rule);
+      stroke-width: 1;
+      stroke-dasharray: 2 4;
+    }
+    .diagram .edge {
+      stroke: currentColor;
+      stroke-width: 1;
+      fill: none;
+    }
+    .diagram .artifact-line {
+      stroke: var(--accent);
+      stroke-width: 1;
+      stroke-dasharray: 1 4;
+      opacity: 0.5;
+    }
+
+    .diagram-figure figcaption {
+      margin-top: 1.25rem;
+      max-width: 52ch;
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+
+    /* ─── stack list ─── */
+    .stack-list {
+      max-width: 58ch;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+    .stack-item dt {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .stack-item dt::before {
+      content: '› ';
+      color: var(--accent);
+      margin-right: 0.15rem;
+    }
+    .stack-item dd {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      margin: 0;
+      padding-left: 1rem;
+      border-left: 1px solid var(--rule);
+    }
+
+    /* ─── responsive: below 640px, tighten the diagram's readability ─── */
+    @media (max-width: 640px) {
+      .about-page { gap: 3rem; padding: 2rem 0 3rem; }
+      .diagram .zone-label { font-size: 9px; }
+      .diagram .node-title { font-size: 10px; }
+      .diagram .mono-small { font-size: 9.5px; }
+      .diagram .edge-label { font-size: 8.5px; }
+    }
+  </style>
+</BaseLayout>
