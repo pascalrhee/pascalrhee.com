@@ -42,7 +42,15 @@ and conventions.
 
 **Agent definitions load at session start.** Create one mid-session and it isn't
 registered until you restart — which is precisely what happened when we tried to
-run it.
+run it, and it registered on the restart exactly as expected. Slash commands are
+the opposite: available the moment the file exists. Practical upshot for any
+future harness work — build the command first if you want to use it today.
+
+**A checklist you follow is not the same artifact as a checklist you wrote.**
+Doing the wrap-up by hand and then having the agent do it produced different
+results from the same file, because reading your own instructions as a fresh
+process exposes the places where you'd been filling gaps from memory without
+noticing.
 
 ## Notes & Examples
 
@@ -76,13 +84,37 @@ was never the one that gets quoted.
 
 ## Still Fuzzy
 
-**The wrap-up agent has never actually run as an agent.** It couldn't register
-mid-session, so today's wrap-up was done by hand following the file. Every claim
-about how it behaves is theory. The specific worry: I warned that the file is now
-long enough that its real risk is the agent *skimming* it rather than executing
-it, and that warning went unanswered. Six phases of gates is a lot to ask an
-agent to work through faithfully. If it under-executes on the first real run, the
-fix is trimming Phase 3 to the gates that actually catch things — not adding more.
+**The agent has now run — and the thing I was worried about was not the thing
+that was wrong.** After a restart it registered and executed all six phases.
+It did *not* skim: the gates took about two minutes and the build and
+`wrangler --dry-run` both passed. So the "the file is too long, trim Phase 3"
+prediction was simply wrong, and that's worth recording because it was the
+loudest warning in this file an hour ago. Three real defects showed up instead,
+none of them length:
+
+1. **The accessibility gate skips itself in exactly the case that matters.** It
+   says "spot-check pages changed this session." Today no pages changed, so
+   followed literally it checks nothing. Checking anyway turned up that `src/`
+   contains **no focus styling at all** — no `:focus-visible`, nothing — in the
+   committed, live tree. A gate that only looks at today's diff will never find
+   a gap that has been there since the beginning. It needs a standing baseline
+   pass, not just a diff pass.
+2. **The doc-drift gate quietly asks the agent to edit `CLAUDE.md`.** It names
+   the exact stale sentence and says to make the edit. But `CLAUDE.md` is the
+   instruction file — an agent rewriting its own instructions on its own
+   initiative is the wrong default, and the drift here wasn't even caused by
+   this session. That gate should say *propose, never edit unasked*.
+3. **There's no branch for being run twice.** The file assumes a fresh,
+   unwrapped session. But its own advice — restart so the agent registers —
+   guarantees the second run lands on an already-written plan and journal and
+   an already-open PR. That case had to be explained by the caller rather than
+   being in the file, and it will recur every time an agent is created
+   mid-session.
+
+A smaller one: the file orders `npm run build` as a gate and separately tells
+you to check port 8787, without connecting them — running a build while
+`wrangler dev` is up is a known `SQLITE_BUSY` crash in this repo. It didn't fire
+this time, but the file walks straight toward it.
 
 **`/end-session` landed as a slash command without weighing the alternatives.**
 The question asked was "could we make this a `/` function?" and the answer was a
@@ -111,6 +143,13 @@ as `astro dev` silently 404ing the API — in both cases the obvious number or t
 obvious command was the wrong one, and the failure was quiet rather than loud.
 The gates now written into the agent exist mostly to make that class of quiet
 failure noisy.
+
+The wrap-up then got run twice — once by hand, once by the agent — and the
+second pass earned its keep in a way worth noting: the manual pass found the
+things the conversation already knew about, and the agent pass found the thing
+nobody had looked for (no focus styles anywhere in the site). That's the
+argument for a written ritual over a remembered one, and it's the same argument
+as the journal itself.
 
 And it exposed a real gap in the current setup: a parallel session was
 substantially redesigning the landing page at the same time as this one, and

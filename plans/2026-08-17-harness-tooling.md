@@ -62,6 +62,13 @@ changed. Two things:
   phase. The agent remains untested as an agent
 - Build gate passed. Secret scan clean (the only files committed are two
   markdown files plus session docs)
+- **Then Pascal restarted and ran `/end-session` for real.** The agent
+  registered on the second attempt exactly as predicted, and executed all six
+  phases against an already-wrapped session. Gates on the real run: `npm run
+  build` passed (5 pages), `npx wrangler deploy --dry-run` passed (bundle 2.27
+  KiB, both `VIEWS_KV` and `ASSETS` bindings resolved), secret scan clean. It
+  did not under-execute the long Phase 3 — the gates cost about two minutes
+  total. Findings and gaps from that run are recorded in the journal
 
 ## Deferred — not this session's work
 The working tree holds a substantial in-flight redesign from a **parallel
@@ -75,8 +82,14 @@ committing another session's work-in-progress would misrepresent both.
 ## What's Next
 - **Land the parallel session's redesign** — decide whether the syllabus
   treatment is finished, then commit it on its own branch with its own record
-- **Actually run `/end-session`** now that the agent will register on restart.
-  Everything about it is theory until a real run
+- **Add focus-visible styles** — the accessibility gate's first real run found
+  *zero* focus styling anywhere in `src/`, committed tree included. Keyboard
+  users currently get browser defaults only. This is priority #2 in `CLAUDE.md`
+  and it is live on pascalrhee.com right now
+- **Patch the agent with what its own first run exposed** — a re-invocation
+  branch, an accessibility gate that doesn't skip when no pages changed, and a
+  "propose, don't edit" rule for `CLAUDE.md`. Details in the journal
 - **Close or merge PR #1** — a bot PR that has been open four months
 - **Fix the doc drift the agent now checks for** — `CLAUDE.md`'s stale status
   line, and the `astro dev` instructions in `README.md` and `AGENTS.md`
+  (`AGENTS.md` recommends `astro dev --background`, which 404s the API)
