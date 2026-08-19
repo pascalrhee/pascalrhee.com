@@ -1,0 +1,327 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  dek?: string;
+  date: string;            // ISO date, e.g. '2026-08-17'
+  readingTime?: string;    // e.g. '5 min'
+  section?: 'writing' | 'projects' | 'about' | 'home';
+}
+
+const {
+  title,
+  dek,
+  date,
+  readingTime,
+  section = 'writing',
+} = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+<BaseLayout title={`${title} · Pascal Rhee`} description={dek ?? title} section={section}>
+  <article class="post">
+
+    <header class="post-head">
+      <p class="post-kicker">
+        <span class="post-kicker-date">{formattedDate}</span>
+        {readingTime && (
+          <>
+            <span class="post-kicker-sep">·</span>
+            <span class="post-kicker-reading">{readingTime}</span>
+          </>
+        )}
+      </p>
+      <h1 class="post-title">{title}</h1>
+      {dek && <p class="post-dek">{dek}</p>}
+      <div class="post-byline">
+        <span class="post-byline-label">By</span>
+        <span class="post-byline-name">Pascal Rhee</span>
+      </div>
+    </header>
+
+    <div class="post-body">
+      <slot />
+    </div>
+
+    <footer class="post-foot">
+      <p class="post-foot-mark" aria-hidden="true">‡</p>
+      <p class="post-foot-note">
+        Thanks for reading. <a href="/writing/">More writing</a>, or
+        <a href="/">back to the front</a>.
+      </p>
+    </footer>
+
+  </article>
+
+  <style>
+    /* ─── page rhythm — matches landing/about stagger ─── */
+    .post {
+      padding: 2.5rem 0 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .post > * {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rise-post 0.9s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
+    }
+    .post > *:nth-child(1) { animation-delay: 0.10s; }
+    .post > *:nth-child(2) { animation-delay: 0.25s; }
+    .post > *:nth-child(3) { animation-delay: 0.40s; }
+
+    @keyframes rise-post {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .post > * { animation: none; opacity: 1; transform: none; }
+    }
+
+    /* ─── post header ─── */
+    .post-head {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 2px solid var(--blue);
+      position: relative;
+    }
+    .post-head::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--maize);
+    }
+
+    .post-kicker {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--tan);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .post-kicker-sep { color: var(--maize); -webkit-text-stroke: 0.4px var(--blue); }
+
+    .post-title {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+      color: var(--blue);
+      margin: 0;
+    }
+    .post-title em, .post-title .italic {
+      font-style: italic;
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 30%,
+        transparent 30%
+      );
+      padding: 0 0.1em;
+    }
+
+    .post-dek {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.15rem, 1.9vw, 1.4rem);
+      line-height: 1.4;
+      color: var(--ink);
+      max-width: 52ch;
+    }
+
+    .post-byline {
+      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      font-size: 0.75rem;
+      color: var(--tan);
+      display: flex;
+      gap: 0.5rem;
+      align-items: baseline;
+    }
+    .post-byline-name { color: var(--blue); }
+
+    /* ─── post body — measured column, drop-cap on first paragraph ─── */
+    .post-body {
+      max-width: 34rem; /* ~68ch at EB Garamond 1.15rem */
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    .post-body :global(p) {
+      margin: 0 0 1.15em;
+    }
+
+    .post-body :global(p:first-of-type::first-letter) {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--blue);
+      float: left;
+      font-size: 4.75rem;
+      line-height: 0.85;
+      padding: 0.35rem 0.6rem 0 0;
+      margin-top: 0.3rem;
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 18%,
+        transparent 18%
+      );
+    }
+
+    .post-body :global(h2) {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      font-size: 1.75rem;
+      line-height: 1.15;
+      color: var(--blue);
+      margin: 2.5rem 0 1rem;
+      letter-spacing: -0.01em;
+    }
+    .post-body :global(h2::before) {
+      content: "§ ";
+      color: var(--maize);
+      -webkit-text-stroke: 0.5px var(--blue);
+      font-size: 0.8em;
+    }
+
+    .post-body :global(h3) {
+      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      font-size: 0.95rem;
+      color: var(--blue);
+      margin: 2rem 0 0.75rem;
+    }
+
+    .post-body :global(a) {
+      color: var(--blue);
+      text-decoration: none;
+      border-bottom: 1px solid var(--tan);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .post-body :global(a:hover) {
+      border-bottom-color: var(--blue);
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 25%,
+        transparent 25%
+      );
+    }
+
+    .post-body :global(em) {
+      font-style: italic;
+    }
+    .post-body :global(strong) {
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .post-body :global(blockquote) {
+      margin: 1.75rem 0;
+      padding: 0.25rem 0 0.25rem 1.5rem;
+      border-left: 3px solid var(--blue);
+      font-style: italic;
+      color: var(--blue);
+      position: relative;
+    }
+    .post-body :global(blockquote::before) {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 3px;
+      width: 1px;
+      background: var(--maize);
+    }
+
+    .post-body :global(code) {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.88em;
+      background: var(--paper-soft);
+      padding: 0.1em 0.4em;
+      border-radius: 2px;
+      color: var(--blue);
+    }
+
+    .post-body :global(pre) {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      background: var(--paper-soft);
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--blue);
+    }
+    .post-body :global(pre code) {
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    .post-body :global(hr) {
+      border: none;
+      text-align: center;
+      margin: 2.5rem 0;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-style: italic;
+      color: var(--blue);
+    }
+    .post-body :global(hr::before) {
+      content: "‡ ‡ ‡";
+      letter-spacing: 0.5em;
+      color: var(--tan);
+    }
+
+    /* ─── post footer ─── */
+    .post-foot {
+      padding-top: 2rem;
+      border-top: 1px solid var(--tan);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      text-align: center;
+    }
+    .post-foot-mark {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-style: italic;
+      color: var(--maize);
+      -webkit-text-stroke: 0.5px var(--blue);
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .post-foot-note {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-style: italic;
+      color: var(--tan);
+      font-size: 0.95rem;
+    }
+    .post-foot-note a {
+      color: var(--blue);
+      border-bottom-color: var(--tan);
+    }
+  </style>
+</BaseLayout>

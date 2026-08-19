@@ -1,0 +1,1508 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Direction previews · pascalrhee.com</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&family=EB+Garamond+SC:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ─────────────────────────────────────────────────────────
+       PREVIEW SHELL
+       Neutral wrapper — never bleeds into the direction sections.
+       ───────────────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #eee;
+    }
+
+    /* Side nav — fixed, jump-to-direction */
+    .preview-nav {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(15, 15, 15, 0.88);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 0.9rem 0.75rem;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      min-width: 210px;
+    }
+    .preview-nav-title {
+      font-size: 0.58rem;
+      color: rgba(255, 255, 255, 0.35);
+      padding: 0 0.5rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 0.4rem;
+    }
+    .preview-nav a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      padding: 0.4rem 0.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .preview-nav a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: currentColor;
+    }
+    .preview-nav a .tag {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.62rem;
+      min-width: 1ch;
+    }
+
+    /* Each direction is a full-height section, self-styled */
+    .direction {
+      min-height: 100vh;
+      padding: 5rem clamp(1.5rem, 5vw, 5rem) 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .direction-tag {
+      position: absolute;
+      top: 1.5rem;
+      left: clamp(1.5rem, 5vw, 5rem);
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.55;
+    }
+    .direction-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 3.5rem;
+    }
+    .direction-title h2 {
+      font-size: clamp(1.75rem, 3.2vw, 2.6rem);
+      margin-bottom: 0.4rem;
+      line-height: 1.05;
+    }
+    .direction-title p {
+      max-width: 62ch;
+      line-height: 1.55;
+      opacity: 0.7;
+      font-size: 0.98rem;
+    }
+
+    /* Palette row */
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1px;
+    }
+    .swatch {
+      aspect-ratio: 4 / 5;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+    }
+    .swatch-hex {
+      font-weight: 500;
+    }
+    .swatch-name {
+      opacity: 0.7;
+      margin-top: 0.15rem;
+    }
+
+    /* Hero + specimen two-column */
+    .mock-row {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .mock-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mock-hero,
+    .type-specimen {
+      padding: 2.5rem 2rem;
+      border: 1px solid;
+    }
+    .type-specimen-item + .type-specimen-item {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed;
+    }
+    .type-specimen-label {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ═════════════════════════════════════════════════════════
+       DIRECTION A — EDITORIAL PAPER (current, extended)
+       Warm cream + terracotta. Colophon, cabinet magazine.
+       ═════════════════════════════════════════════════════════ */
+    .dir-a {
+      --paper: #f6f2ec;
+      --paper-deep: #ece6dc;
+      --ink: #1a1a1a;
+      --ink-soft: #54524d;
+      --accent: #b8462a;
+      --rule: #d9d1c4;
+      background: var(--paper);
+      color: var(--ink);
+      background-image: radial-gradient(
+          circle at 20% 15%,
+          rgba(184, 70, 42, 0.05),
+          transparent 45%
+        ),
+        radial-gradient(
+          circle at 85% 85%,
+          rgba(26, 26, 26, 0.04),
+          transparent 50%
+        );
+    }
+    .dir-a .palette {
+      background: var(--rule);
+    }
+    .dir-a .swatch,
+    .dir-a .mock-hero,
+    .dir-a .type-specimen {
+      color: var(--ink);
+      border-color: var(--rule);
+    }
+    .dir-a .type-specimen-item + .type-specimen-item {
+      border-top-color: var(--rule);
+    }
+    .dir-a .a-site-head {
+      display: flex;
+      justify-content: space-between;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+    .dir-a .a-site-head .mark {
+      color: var(--accent);
+    }
+    .dir-a .a-hero-name {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+    }
+    .dir-a .a-hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .dir-a .a-lede {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      color: var(--ink-soft);
+      max-width: 42ch;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      margin: 1.5rem 0 2rem;
+    }
+    .dir-a .a-counter {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--accent);
+      font-size: clamp(3.5rem, 8vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+    .dir-a .a-counter-cap {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-top: 0.4rem;
+    }
+    .dir-a .a-counter-cap span {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+    .dir-a .a-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      border-left: 1px solid var(--rule);
+      padding-left: 1rem;
+      margin-top: 2rem;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      color: var(--ink-soft);
+    }
+    .dir-a .a-meta .label {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+    .dir-a .a-type-display {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .dir-a .a-type-italic {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 2.2rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .dir-a .a-type-body {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--ink-soft);
+    }
+    .dir-a .a-type-mono {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .dir-a .a-type-mono span {
+      color: var(--accent);
+    }
+
+    /* ═════════════════════════════════════════════════════════
+       DIRECTION B — EDITORIAL DUSK (dark reversal)
+       Same type system, night mode. Bookshop lamp mood.
+       ═════════════════════════════════════════════════════════ */
+    .dir-b {
+      --ink: #0f1013;
+      --ink-deep: #1a1c22;
+      --cream: #f0dfbc;
+      --cream-soft: #a89f8a;
+      --coral: #d97757;
+      --rule: #2a2d35;
+      background: var(--ink);
+      color: var(--cream);
+      background-image: radial-gradient(
+          ellipse at 25% 20%,
+          rgba(217, 119, 87, 0.11),
+          transparent 55%
+        ),
+        radial-gradient(
+          ellipse at 80% 90%,
+          rgba(240, 223, 188, 0.05),
+          transparent 60%
+        );
+    }
+    .dir-b .palette {
+      background: var(--rule);
+    }
+    .dir-b .swatch,
+    .dir-b .mock-hero,
+    .dir-b .type-specimen {
+      color: var(--cream);
+      border-color: var(--rule);
+    }
+    .dir-b .type-specimen-item + .type-specimen-item {
+      border-top-color: var(--rule);
+    }
+    .dir-b .b-site-head {
+      display: flex;
+      justify-content: space-between;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cream-soft);
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 2rem;
+    }
+    .dir-b .b-site-head .mark {
+      color: var(--coral);
+    }
+    .dir-b .b-hero-name {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+    }
+    .dir-b .b-hero-name em {
+      font-style: italic;
+      color: var(--coral);
+    }
+    .dir-b .b-lede {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      color: var(--cream-soft);
+      max-width: 42ch;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 1.5rem 0 2rem;
+    }
+    .dir-b .b-counter {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--coral);
+      font-size: clamp(3.5rem, 8vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+    .dir-b .b-counter-cap {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cream-soft);
+      margin-top: 0.4rem;
+    }
+    .dir-b .b-counter-cap span {
+      color: var(--coral);
+      margin-right: 0.5rem;
+    }
+    .dir-b .b-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      border-left: 1px solid var(--rule);
+      padding-left: 1rem;
+      margin-top: 2rem;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      color: var(--cream-soft);
+    }
+    .dir-b .b-meta .label {
+      color: var(--coral);
+      margin-right: 0.5rem;
+    }
+    .dir-b .b-type-display {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .dir-b .b-type-italic {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 2.2rem;
+      color: var(--coral);
+      line-height: 1;
+    }
+    .dir-b .b-type-body {
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 300;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--cream-soft);
+    }
+    .dir-b .b-type-mono {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cream-soft);
+    }
+    .dir-b .b-type-mono span {
+      color: var(--coral);
+    }
+
+    /* ═════════════════════════════════════════════════════════
+       DIRECTION C — BUILD-LOG TERMINAL
+       Phosphor mono. Hacker's public build log.
+       ═════════════════════════════════════════════════════════ */
+    .dir-c {
+      --bg: #0a0d0a;
+      --panel: #131813;
+      --text: #e6edf3;
+      --phosphor: #7ee787;
+      --alert: #ff7b72;
+      --rule: #2a352a;
+      background: var(--bg);
+      color: var(--text);
+      background-image: repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 3px,
+        rgba(126, 231, 135, 0.014) 3px,
+        rgba(126, 231, 135, 0.014) 4px
+      );
+    }
+    .dir-c .palette {
+      background: var(--rule);
+    }
+    .dir-c .swatch,
+    .dir-c .mock-hero,
+    .dir-c .type-specimen {
+      color: var(--text);
+      background: var(--panel);
+      border-color: var(--rule);
+    }
+    .dir-c .type-specimen-item + .type-specimen-item {
+      border-top-color: var(--rule);
+    }
+    .dir-c .c-terminal {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .dir-c .c-term-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--phosphor);
+      opacity: 0.75;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 1.25rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+    }
+    .dir-c .c-term-dots {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .dir-c .c-term-dots span {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--rule);
+    }
+    .dir-c .c-prompt {
+      color: var(--phosphor);
+    }
+    .dir-c .c-out {
+      color: var(--text);
+      opacity: 0.85;
+    }
+    .dir-c .c-out.alert {
+      color: var(--alert);
+    }
+    .dir-c .c-cursor {
+      display: inline-block;
+      width: 0.5em;
+      background: var(--phosphor);
+      color: transparent;
+      animation: c-blink 1.2s steps(2) infinite;
+    }
+    @keyframes c-blink {
+      50% {
+        opacity: 0;
+      }
+    }
+    .dir-c .c-heading {
+      font-family: "Fraunces", Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--phosphor);
+    }
+    .dir-c .c-type-display {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 1.85rem;
+      color: var(--phosphor);
+      font-weight: 500;
+      line-height: 1.1;
+    }
+    .dir-c .c-type-italic {
+      font-family: "Fraunces", Georgia, serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 2.1rem;
+      color: var(--phosphor);
+      line-height: 1;
+    }
+    .dir-c .c-type-body {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text);
+      opacity: 0.85;
+    }
+    .dir-c .c-type-mono {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--phosphor);
+    }
+
+    /* ═════════════════════════════════════════════════════════
+       DIRECTION D — MODERNIST GRID (reset)
+       Editorial serif × grotesk. Signal orange. e-flux vibe.
+       ═════════════════════════════════════════════════════════ */
+    .dir-d {
+      --paper: #f5f4f0;
+      --rule-tone: #e6e2d6;
+      --ink: #0a0a0a;
+      --signal: #ff5b1f;
+      --muted: #6a655a;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .dir-d .palette {
+      background: var(--ink);
+    }
+    .dir-d .swatch,
+    .dir-d .mock-hero,
+    .dir-d .type-specimen {
+      color: var(--ink);
+      border-color: var(--ink);
+      border-width: 2px;
+    }
+    .dir-d .type-specimen-item + .type-specimen-item {
+      border-top: 2px dashed var(--ink);
+    }
+    .dir-d .mock-hero {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 130px 1fr;
+      min-height: 340px;
+    }
+    .dir-d .d-side {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .dir-d .d-side-label {
+      opacity: 0.55;
+    }
+    .dir-d .d-side-issue {
+      font-family: "Newsreader", Georgia, serif;
+      font-style: italic;
+      font-size: 2rem;
+      color: var(--signal);
+      letter-spacing: -0.02em;
+      text-transform: none;
+    }
+    .dir-d .d-side-issue-label {
+      opacity: 0.5;
+      font-size: 0.62rem;
+    }
+    .dir-d .d-body {
+      padding: 1.75rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .dir-d .d-nav {
+      display: flex;
+      gap: 1.5rem;
+      font-family: "Bricolage Grotesque", -apple-system, sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--ink);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .dir-d .d-nav a {
+      color: var(--ink);
+      text-decoration: none;
+      position: relative;
+    }
+    .dir-d .d-nav a::before {
+      content: "▮";
+      color: var(--signal);
+      margin-right: 0.35rem;
+      font-size: 0.7em;
+    }
+    .dir-d .d-hero-name {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      margin: 1.5rem 0 0.75rem;
+    }
+    .dir-d .d-hero-name em {
+      font-style: italic;
+      color: var(--signal);
+    }
+    .dir-d .d-lede {
+      font-family: "Bricolage Grotesque", -apple-system, sans-serif;
+      font-weight: 300;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--muted);
+      max-width: 42ch;
+    }
+    .dir-d .d-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--rule-tone);
+      margin-top: 1.5rem;
+    }
+    .dir-d .d-counter {
+      font-family: "Newsreader", Georgia, serif;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--signal);
+      font-size: 2.75rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .dir-d .d-counter-cap {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .dir-d .d-type-display {
+      font-family: "Newsreader", Georgia, serif;
+      font-weight: 400;
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+    .dir-d .d-type-italic {
+      font-family: "Newsreader", Georgia, serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 2.2rem;
+      color: var(--signal);
+      line-height: 1;
+    }
+    .dir-d .d-type-body {
+      font-family: "Bricolage Grotesque", -apple-system, sans-serif;
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .dir-d .d-type-mono {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .dir-d .d-type-mono span {
+      color: var(--signal);
+    }
+
+    /* ═════════════════════════════════════════════════════════
+       DIRECTION E — MICHIGAN WOLVERINE
+       Blue + Maize. Classical serif with small-caps.
+       Collegiate — like a football program or Law Quad plaque.
+       ═════════════════════════════════════════════════════════ */
+    .dir-e {
+      --blue: #00274c;
+      --blue-deep: #0d1929;
+      --maize: #ffcb05;
+      --paper: #f5f1e8;
+      --paper-soft: #e8e2d2;
+      --tan: #8b7c5a;
+      --ink: #1a1a1a;
+      background: var(--paper);
+      color: var(--blue);
+      background-image: radial-gradient(
+          circle at 15% 12%,
+          rgba(0, 39, 76, 0.06),
+          transparent 45%
+        ),
+        radial-gradient(
+          circle at 88% 85%,
+          rgba(255, 203, 5, 0.08),
+          transparent 40%
+        );
+    }
+    .dir-e .palette {
+      background: var(--blue);
+    }
+    .dir-e .swatch,
+    .dir-e .mock-hero,
+    .dir-e .type-specimen {
+      color: var(--blue);
+      border-color: var(--blue);
+      border-width: 1px;
+    }
+    .dir-e .type-specimen-item + .type-specimen-item {
+      border-top: 1px dashed var(--tan);
+    }
+    .dir-e .mock-hero {
+      padding: 0;
+      background: var(--paper);
+      position: relative;
+    }
+    /* Top rule + double stroke — collegiate program feel */
+    .dir-e .mock-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: var(--blue);
+      box-shadow: 0 8px 0 var(--maize);
+    }
+    .dir-e .e-inner {
+      padding: 3rem 2.5rem 2.5rem;
+    }
+    .dir-e .e-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--tan);
+      margin-bottom: 2rem;
+    }
+    .dir-e .e-wordmark {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .dir-e .e-block-m {
+      /* Stylized Block-M inspired glyph — geometric, not the trademarked mark */
+      width: 34px;
+      height: 34px;
+      background: var(--blue);
+      color: var(--maize);
+      display: grid;
+      place-items: center;
+      font-family: "EB Garamond", serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .dir-e .e-wordmark-text {
+      font-family: "EB Garamond SC", "EB Garamond", serif;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      font-size: 0.85rem;
+      color: var(--blue);
+    }
+    .dir-e .e-est {
+      font-family: "EB Garamond SC", "EB Garamond", serif;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      font-size: 0.7rem;
+      color: var(--tan);
+      text-align: right;
+    }
+    .dir-e .e-est-year {
+      color: var(--blue);
+      font-weight: 500;
+    }
+    .dir-e .e-kicker {
+      font-family: "EB Garamond SC", "EB Garamond", serif;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      font-size: 0.72rem;
+      color: var(--tan);
+      margin-bottom: 0.85rem;
+    }
+    .dir-e .e-kicker::before {
+      content: "§ ";
+      color: var(--maize);
+      -webkit-text-stroke: 0.5px var(--blue);
+    }
+    .dir-e .e-hero-name {
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(2.5rem, 5.5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.015em;
+      color: var(--blue);
+    }
+    .dir-e .e-hero-name em {
+      font-style: italic;
+      font-weight: 500;
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 32%,
+        transparent 32%,
+        transparent 100%
+      );
+      padding: 0 0.1em;
+    }
+    .dir-e .e-lede {
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 400;
+      font-size: 1.15rem;
+      line-height: 1.55;
+      color: var(--ink);
+      max-width: 46ch;
+      margin: 1.5rem 0 2rem;
+    }
+    .dir-e .e-lede em {
+      font-style: italic;
+      color: var(--blue);
+      font-weight: 500;
+    }
+    .dir-e .e-counter-row {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      border-top: 2px solid var(--blue);
+      border-bottom: 2px solid var(--blue);
+      margin: 2rem 0 1.5rem;
+      position: relative;
+    }
+    .dir-e .e-counter-row::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--maize);
+    }
+    .dir-e .e-counter {
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 500;
+      font-style: italic;
+      color: var(--blue);
+      font-size: clamp(3rem, 7vw, 4.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+    }
+    .dir-e .e-counter-cap {
+      font-family: "EB Garamond SC", "EB Garamond", serif;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      font-size: 0.72rem;
+      color: var(--tan);
+    }
+    .dir-e .e-counter-cap span {
+      display: block;
+      color: var(--blue);
+      margin-top: 0.2rem;
+      font-size: 0.8rem;
+    }
+    .dir-e .e-syllabus {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.85rem 1.5rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.03em;
+    }
+    .dir-e .e-syllabus dt {
+      color: var(--maize);
+      -webkit-text-stroke: 0.4px var(--blue);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .dir-e .e-syllabus dd {
+      color: var(--ink);
+      margin: 0;
+    }
+    .dir-e .e-type-display {
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 500;
+      font-size: 2.75rem;
+      line-height: 1;
+      color: var(--blue);
+    }
+    .dir-e .e-type-italic {
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 500;
+      font-style: italic;
+      font-size: 2.5rem;
+      color: var(--blue);
+      line-height: 1;
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 32%,
+        transparent 32%
+      );
+      padding: 0 0.1em;
+      display: inline-block;
+    }
+    .dir-e .e-type-sc {
+      font-family: "EB Garamond SC", "EB Garamond", serif;
+      font-weight: 500;
+      font-size: 1.15rem;
+      letter-spacing: 0.15em;
+      color: var(--blue);
+    }
+    .dir-e .e-type-body {
+      font-family: "EB Garamond", Georgia, serif;
+      font-weight: 400;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+    .dir-e .e-type-mono {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      color: var(--blue);
+    }
+    .dir-e .e-type-mono span {
+      color: var(--maize);
+      -webkit-text-stroke: 0.4px var(--blue);
+    }
+
+    /* Footer */
+    .preview-foot {
+      padding: 3rem 2rem 4rem;
+      text-align: center;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      background: #0a0a0a;
+    }
+  </style>
+</head>
+<body>
+  <nav class="preview-nav" aria-label="Direction previews">
+    <div class="preview-nav-title">Directions</div>
+    <a href="#a"><span class="tag">A</span>Editorial paper</a>
+    <a href="#b"><span class="tag">B</span>Editorial dusk</a>
+    <a href="#c"><span class="tag">C</span>Build-log terminal</a>
+    <a href="#d"><span class="tag">D</span>Modernist grid</a>
+    <a href="#e"><span class="tag">E</span>Michigan wolverine</a>
+  </nav>
+
+  <!-- ═════════════════════════ A ═════════════════════════ -->
+  <section id="a" class="direction dir-a">
+    <div class="direction-tag">Direction A</div>
+    <div class="direction-inner">
+      <div class="direction-title">
+        <h2 style="font-family: 'Fraunces', Georgia, serif; font-weight: 300;">
+          Editorial paper — <em style="font-style: italic; color: var(--accent);">extend current</em>
+        </h2>
+        <p style="font-family: 'Fraunces', Georgia, serif;">
+          Warm cream and terracotta, Fraunces + JetBrains Mono. Feels like the
+          colophon of a printed publication — quiet, considered, italic where it
+          matters. This is what's live right now, polished and scaled to more
+          pages.
+        </p>
+      </div>
+
+      <div class="palette">
+        <div class="swatch" style="background: #f6f2ec;">
+          <div class="swatch-hex">#F6F2EC</div>
+          <div class="swatch-name">paper</div>
+        </div>
+        <div class="swatch" style="background: #ece6dc;">
+          <div class="swatch-hex">#ECE6DC</div>
+          <div class="swatch-name">paper deep</div>
+        </div>
+        <div class="swatch" style="background: #1a1a1a; color: #f6f2ec;">
+          <div class="swatch-hex">#1A1A1A</div>
+          <div class="swatch-name">ink</div>
+        </div>
+        <div class="swatch" style="background: #54524d; color: #f6f2ec;">
+          <div class="swatch-hex">#54524D</div>
+          <div class="swatch-name">ink soft</div>
+        </div>
+        <div class="swatch" style="background: #b8462a; color: #f6f2ec;">
+          <div class="swatch-hex">#B8462A</div>
+          <div class="swatch-name">terracotta</div>
+        </div>
+        <div class="swatch" style="background: #d9d1c4;">
+          <div class="swatch-hex">#D9D1C4</div>
+          <div class="swatch-name">rule</div>
+        </div>
+      </div>
+
+      <div class="mock-row">
+        <div class="mock-hero">
+          <div class="a-site-head">
+            <span><span class="mark">●</span>&nbsp;&nbsp;pascalrhee.com</span>
+            <span>v0.0.1</span>
+          </div>
+          <h1 class="a-hero-name">
+            Pascal Rhee<br /><em>is building.</em>
+          </h1>
+          <p class="a-lede">
+            A personal site is going up here — a record of projects, a build log
+            of what's being learned, and the occasional thing worth reading.
+          </p>
+          <div class="a-counter">142</div>
+          <div class="a-counter-cap"><span>◆</span>past 24 hours</div>
+          <div class="a-meta">
+            <span><span class="label">STATUS</span>under construction</span>
+            <span><span class="label">STACK</span>astro · workers · claude code</span>
+            <span><span class="label">NEXT</span>real content</span>
+          </div>
+        </div>
+        <div class="type-specimen">
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Display · Fraunces 300</div>
+            <div class="a-type-display">Building a home.</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Italic accent</div>
+            <div class="a-type-italic">in the open</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Body · Fraunces 300</div>
+            <div class="a-type-body">
+              What Astro builds at compile time is what the Worker serves at
+              runtime — the dashed line is that same folder crossing the
+              boundary.
+            </div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Mono kicker</div>
+            <div class="a-type-mono"><span>STATUS</span> under construction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════ B ═════════════════════════ -->
+  <section id="b" class="direction dir-b">
+    <div class="direction-tag">Direction B</div>
+    <div class="direction-inner">
+      <div class="direction-title">
+        <h2 style="font-family: 'Fraunces', Georgia, serif; font-weight: 300; color: var(--cream);">
+          Editorial dusk — <em style="font-style: italic; color: var(--coral);">dark reversal</em>
+        </h2>
+        <p style="font-family: 'Fraunces', Georgia, serif; color: var(--cream-soft);">
+          Same typographic system as A, flipped to night mode. Warm cream on
+          deep ink, coral where terracotta was, ambient gradients for atmosphere.
+          Reading-forward — like a lamp on a bookshop desk.
+        </p>
+      </div>
+
+      <div class="palette">
+        <div class="swatch" style="background: #0f1013; color: #f0dfbc;">
+          <div class="swatch-hex">#0F1013</div>
+          <div class="swatch-name">ink</div>
+        </div>
+        <div class="swatch" style="background: #1a1c22; color: #f0dfbc;">
+          <div class="swatch-hex">#1A1C22</div>
+          <div class="swatch-name">ink deep</div>
+        </div>
+        <div class="swatch" style="background: #f0dfbc; color: #0f1013;">
+          <div class="swatch-hex">#F0DFBC</div>
+          <div class="swatch-name">cream</div>
+        </div>
+        <div class="swatch" style="background: #a89f8a; color: #0f1013;">
+          <div class="swatch-hex">#A89F8A</div>
+          <div class="swatch-name">cream soft</div>
+        </div>
+        <div class="swatch" style="background: #d97757; color: #0f1013;">
+          <div class="swatch-hex">#D97757</div>
+          <div class="swatch-name">coral</div>
+        </div>
+        <div class="swatch" style="background: #2a2d35; color: #f0dfbc;">
+          <div class="swatch-hex">#2A2D35</div>
+          <div class="swatch-name">rule</div>
+        </div>
+      </div>
+
+      <div class="mock-row">
+        <div class="mock-hero">
+          <div class="b-site-head">
+            <span><span class="mark">◆</span>&nbsp;&nbsp;pascalrhee.com</span>
+            <span>v0.0.1</span>
+          </div>
+          <h1 class="b-hero-name">
+            Pascal Rhee,<br /><em>building softly.</em>
+          </h1>
+          <p class="b-lede">
+            A quiet corner of the internet — writing, projects, notes. Built one
+            session at a time, in the open, on nights like this.
+          </p>
+          <div class="b-counter">142</div>
+          <div class="b-counter-cap"><span>◆</span>past 24 hours</div>
+          <div class="b-meta">
+            <span><span class="label">STATUS</span>dusk mode</span>
+            <span><span class="label">STACK</span>astro · workers</span>
+            <span><span class="label">NEXT</span>a first essay</span>
+          </div>
+        </div>
+        <div class="type-specimen">
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--cream-soft);">Display · Fraunces 300</div>
+            <div class="b-type-display">Building a home.</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--cream-soft);">Italic accent</div>
+            <div class="b-type-italic">in the open</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--cream-soft);">Body · Fraunces 300</div>
+            <div class="b-type-body">
+              What Astro builds at compile time is what the Worker serves at
+              runtime — the dashed line is that same folder crossing the
+              boundary.
+            </div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--cream-soft);">Mono kicker</div>
+            <div class="b-type-mono"><span>STATUS</span> dusk mode</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════ C ═════════════════════════ -->
+  <section id="c" class="direction dir-c">
+    <div class="direction-tag">Direction C</div>
+    <div class="direction-inner">
+      <div class="direction-title">
+        <h2 style="font-family: 'Fraunces', Georgia, serif; font-style: italic; font-weight: 300; color: var(--phosphor);">
+          Build-log terminal
+        </h2>
+        <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text); opacity: 0.75;">
+          Mono-dominant, phosphor accent, subtle CRT texture. Reads as a
+          hacker's public build log — very "building in public." Distinctive but
+          narrower for long-form writing; italics stay for rare human moments.
+        </p>
+      </div>
+
+      <div class="palette">
+        <div class="swatch" style="background: #0a0d0a; color: #7ee787;">
+          <div class="swatch-hex">#0A0D0A</div>
+          <div class="swatch-name">bg</div>
+        </div>
+        <div class="swatch" style="background: #131813; color: #7ee787;">
+          <div class="swatch-hex">#131813</div>
+          <div class="swatch-name">panel</div>
+        </div>
+        <div class="swatch" style="background: #e6edf3; color: #0a0d0a;">
+          <div class="swatch-hex">#E6EDF3</div>
+          <div class="swatch-name">text</div>
+        </div>
+        <div class="swatch" style="background: #7ee787; color: #0a0d0a;">
+          <div class="swatch-hex">#7EE787</div>
+          <div class="swatch-name">phosphor</div>
+        </div>
+        <div class="swatch" style="background: #ff7b72; color: #0a0d0a;">
+          <div class="swatch-hex">#FF7B72</div>
+          <div class="swatch-name">alert</div>
+        </div>
+        <div class="swatch" style="background: #2a352a; color: #e6edf3;">
+          <div class="swatch-hex">#2A352A</div>
+          <div class="swatch-name">rule</div>
+        </div>
+      </div>
+
+      <div class="mock-row">
+        <div class="mock-hero c-terminal">
+          <div class="c-term-header">
+            <div class="c-term-dots"><span></span><span></span><span></span></div>
+            <div>~/pascalrhee.com — bash</div>
+            <div style="opacity: 0.5;">142 loads</div>
+          </div>
+          <div><span class="c-prompt">pascal@edge:~$</span> whoami</div>
+          <div class="c-out">pascal_rhee</div>
+          <div>&nbsp;</div>
+          <div><span class="c-prompt">pascal@edge:~$</span> cat status.md</div>
+          <div class="c-out">
+            &gt; building in public<br />
+            &gt; <span class="c-heading">a place to think</span>, one commit at a time
+          </div>
+          <div>&nbsp;</div>
+          <div><span class="c-prompt">pascal@edge:~$</span> ls -la</div>
+          <div class="c-out">drwxr-xr-x  writing/</div>
+          <div class="c-out">drwxr-xr-x  projects/</div>
+          <div class="c-out">drwxr-xr-x  about/</div>
+          <div>&nbsp;</div>
+          <div><span class="c-prompt">pascal@edge:~$</span> tail -f traffic.log</div>
+          <div class="c-out">[24h] 142 requests · 30h TTL rolling</div>
+          <div>&nbsp;</div>
+          <div><span class="c-prompt">pascal@edge:~$</span> <span class="c-cursor">_</span></div>
+        </div>
+        <div class="type-specimen">
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--phosphor);">Display · JetBrains Mono 500</div>
+            <div class="c-type-display">$ building_a_home</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--phosphor);">Rare italic · Fraunces</div>
+            <div class="c-type-italic">in the open</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--phosphor);">Body · JetBrains Mono 400</div>
+            <div class="c-type-body">
+              # what Astro builds at compile time is what<br />
+              # the Worker serves at runtime — one artifact,<br />
+              # one deploy, one thing to reason about.
+            </div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--phosphor);">Mono kicker</div>
+            <div class="c-type-mono">[status] dusk mode</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════ D ═════════════════════════ -->
+  <section id="d" class="direction dir-d">
+    <div class="direction-tag">Direction D</div>
+    <div class="direction-inner">
+      <div class="direction-title">
+        <h2 style="font-family: 'Newsreader', Georgia, serif; font-weight: 500;">
+          Modernist grid — <em style="font-style: italic; color: var(--signal);">reset</em>
+        </h2>
+        <p style="font-family: 'Bricolage Grotesque', -apple-system, sans-serif; color: var(--muted);">
+          Full reset. High-contrast serif × grotesk pairing, thick rules,
+          signal-orange accents, structured column grid. Feels like a design
+          journal or an issue of e-flux, not a colophon. Loudest of the five.
+        </p>
+      </div>
+
+      <div class="palette">
+        <div class="swatch" style="background: #f5f4f0;">
+          <div class="swatch-hex">#F5F4F0</div>
+          <div class="swatch-name">paper</div>
+        </div>
+        <div class="swatch" style="background: #e6e2d6;">
+          <div class="swatch-hex">#E6E2D6</div>
+          <div class="swatch-name">rule tone</div>
+        </div>
+        <div class="swatch" style="background: #0a0a0a; color: #f5f4f0;">
+          <div class="swatch-hex">#0A0A0A</div>
+          <div class="swatch-name">ink</div>
+        </div>
+        <div class="swatch" style="background: #ff5b1f; color: #f5f4f0;">
+          <div class="swatch-hex">#FF5B1F</div>
+          <div class="swatch-name">signal</div>
+        </div>
+        <div class="swatch" style="background: #6a655a; color: #f5f4f0;">
+          <div class="swatch-hex">#6A655A</div>
+          <div class="swatch-name">muted</div>
+        </div>
+      </div>
+
+      <div class="mock-row">
+        <div class="mock-hero">
+          <div class="d-side">
+            <div>
+              <div class="d-side-label">Pascal</div>
+              <div class="d-side-label">Rhee</div>
+            </div>
+            <div>
+              <div class="d-side-issue-label">Issue</div>
+              <div class="d-side-issue">№001</div>
+              <div class="d-side-label" style="margin-top: 0.5rem;">01 · 2026</div>
+            </div>
+          </div>
+          <div class="d-body">
+            <div class="d-nav">
+              <a href="#">Writing</a>
+              <a href="#">Projects</a>
+              <a href="#">Notes</a>
+              <a href="#">About</a>
+            </div>
+            <div>
+              <h1 class="d-hero-name">
+                Building a place<br />to think, <em>in the open.</em>
+              </h1>
+              <p class="d-lede">
+                A personal home base for writing, projects, and whatever
+                accumulates — published one session at a time.
+              </p>
+            </div>
+            <div class="d-foot">
+              <div>
+                <div class="d-counter">142</div>
+                <div class="d-counter-cap">◼ past 24 hours</div>
+              </div>
+              <div class="d-counter-cap">— read latest →</div>
+            </div>
+          </div>
+        </div>
+        <div class="type-specimen">
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Display · Newsreader 400</div>
+            <div class="d-type-display">Building a home.</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Italic accent · Newsreader 500</div>
+            <div class="d-type-italic">in the open</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Body · Bricolage Grotesque</div>
+            <div class="d-type-body">
+              What Astro builds at compile time is what the Worker serves at
+              runtime — the dashed line is that same folder crossing the
+              boundary.
+            </div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label">Mono label</div>
+            <div class="d-type-mono">◼ <span>ISSUE</span> №001 · 01/2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════ E ═════════════════════════ -->
+  <section id="e" class="direction dir-e">
+    <div class="direction-tag">Direction E</div>
+    <div class="direction-inner">
+      <div class="direction-title">
+        <h2 style="font-family: 'EB Garamond', Georgia, serif; font-weight: 500; color: var(--blue);">
+          Michigan wolverine — <em style="font-style: italic;">go blue</em>
+        </h2>
+        <p style="font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem; color: var(--ink); max-width: 66ch;">
+          Michigan blue and maize on warm paper. EB Garamond in regular and
+          small-caps for that collegiate small-print feel — think a football
+          program cover crossed with a Law Quad plaque. The maize acts as a
+          highlighter behind key phrases, never as a background.
+        </p>
+      </div>
+
+      <div class="palette">
+        <div class="swatch" style="background: #00274c; color: #ffcb05;">
+          <div class="swatch-hex">#00274C</div>
+          <div class="swatch-name">michigan blue</div>
+        </div>
+        <div class="swatch" style="background: #ffcb05; color: #00274c;">
+          <div class="swatch-hex">#FFCB05</div>
+          <div class="swatch-name">maize</div>
+        </div>
+        <div class="swatch" style="background: #f5f1e8; color: #00274c;">
+          <div class="swatch-hex">#F5F1E8</div>
+          <div class="swatch-name">paper</div>
+        </div>
+        <div class="swatch" style="background: #e8e2d2; color: #00274c;">
+          <div class="swatch-hex">#E8E2D2</div>
+          <div class="swatch-name">paper soft</div>
+        </div>
+        <div class="swatch" style="background: #8b7c5a; color: #f5f1e8;">
+          <div class="swatch-hex">#8B7C5A</div>
+          <div class="swatch-name">tan</div>
+        </div>
+        <div class="swatch" style="background: #0d1929; color: #ffcb05;">
+          <div class="swatch-hex">#0D1929</div>
+          <div class="swatch-name">midnight</div>
+        </div>
+      </div>
+
+      <div class="mock-row">
+        <div class="mock-hero">
+          <div class="e-inner">
+            <div class="e-head">
+              <div class="e-wordmark">
+                <div class="e-block-m" aria-hidden="true">M</div>
+                <div class="e-wordmark-text">Pascal · Rhee</div>
+              </div>
+              <div class="e-est">
+                Est.<br /><span class="e-est-year">MMIII</span>
+              </div>
+            </div>
+
+            <div class="e-kicker">Volume I · Bulletin No. 001</div>
+            <h1 class="e-hero-name">
+              A home base<br />for <em>the record.</em>
+            </h1>
+            <p class="e-lede">
+              A personal site — writing, projects, and whatever accumulates
+              across the years. Assembled deliberately, published <em>in the
+              open</em>, and dated like a program.
+            </p>
+
+            <div class="e-counter-row">
+              <div class="e-counter">142</div>
+              <div class="e-counter-cap">
+                Attendance
+                <span>past 24 hours</span>
+              </div>
+            </div>
+
+            <dl class="e-syllabus">
+              <dt>Course</dt><dd>Pascal Rhee · dot com</dd>
+              <dt>Term</dt><dd>Winter 2026 — indefinite</dd>
+              <dt>Sections</dt><dd>Writing · Projects · Notes · About</dd>
+              <dt>Instructor</dt><dd>Pascal, one commit at a time</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="type-specimen">
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--tan);">Display · EB Garamond 500</div>
+            <div class="e-type-display">Building a home.</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--tan);">Italic w/ maize highlight</div>
+            <div class="e-type-italic">in the open</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--tan);">Small caps · section label</div>
+            <div class="e-type-sc">§ Volume I · Bulletin No. 001</div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--tan);">Body · EB Garamond 400</div>
+            <div class="e-type-body">
+              What Astro builds at compile time is what the Worker serves at
+              runtime — the dashed line is that same folder crossing the
+              boundary.
+            </div>
+          </div>
+          <div class="type-specimen-item">
+            <div class="type-specimen-label" style="color: var(--tan);">Mono label · IBM Plex Mono</div>
+            <div class="e-type-mono"><span>§</span> STATUS &nbsp; winter '26</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="preview-foot">
+    5 directions · one artifact · pick a favorite
+  </footer>
+</body>
+</html>

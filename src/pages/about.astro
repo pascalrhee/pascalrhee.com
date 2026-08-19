@@ -4,11 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <BaseLayout
   title="About · Pascal Rhee"
   description="How pascalrhee.com is built — a short colophon and architecture diagram."
+  section="about"
 >
   <article class="about-page">
 
     <header class="page-heading">
-      <p class="kicker"><span class="label">ABOUT</span>this site</p>
+      <p class="kicker">About · this site</p>
       <h1>
         A personal home base,<br />
         <span class="italic">built in public.</span>
@@ -30,7 +31,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="architecture-section">
-      <p class="kicker"><span class="label">ARCHITECTURE</span>build → deploy → serve</p>
+      <p class="kicker">Architecture · build → deploy → serve</p>
 
       <figure class="diagram-figure">
         <svg
@@ -102,7 +103,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <text x="302" y="234" class="node-title accent">WORKER.fetch</text>
           <text x="302" y="256" class="mono-small">src/worker/index.ts</text>
 
-          <!-- Branch labels (small, tucked between routes) -->
           <!-- Branch 1: /api/track → KV (leftward) -->
           <path d="M 320 275 L 320 305 L 145 305 L 145 348" class="edge" fill="none" marker-end="url(#arrowhead)" />
           <text x="232" y="298" class="edge-label" text-anchor="middle">POST /api/track  (+1)</text>
@@ -128,7 +128,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <text x="552" y="408" class="mono-small">as static files</text>
 
           <!-- ─── The "same artifact" line: DIST → ASSETS ─── -->
-          <!-- Subtle accent-dashed line showing that what Astro builds is what the Worker serves. -->
           <path d="M 300 118 L 300 140 L 615 140 L 615 348" class="artifact-line" fill="none" />
           <text x="465" y="134" class="edge-label subtle" text-anchor="middle">— same artifact —</text>
 
@@ -136,14 +135,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <figcaption>
           Two zones, one artifact. What Astro builds at compile time is what the
-          Worker serves at runtime — the dashed line is that same folder crossing
-          the boundary.
+          Worker serves at runtime — the maize dashed line is that same folder
+          crossing the boundary.
         </figcaption>
       </figure>
     </section>
 
     <section class="stack-section">
-      <p class="kicker"><span class="label">STACK</span>choices, in longer form</p>
+      <p class="kicker">Stack · choices, in longer form</p>
 
       <dl class="stack-list">
         <div class="stack-item">
@@ -182,11 +181,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .about-page {
       display: flex;
       flex-direction: column;
-      gap: 4rem;
-      padding: 3rem 0 4rem;
+      gap: 3.5rem;
+      padding: 2.5rem 0 3rem;
     }
 
-    /* Staggered entrance, matching the landing page's rhythm */
+    /* Staggered entrance — matches the landing content rhythm */
     .about-page > * {
       opacity: 0;
       transform: translateY(8px);
@@ -205,114 +204,87 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       .about-page > * { animation: none; opacity: 1; transform: none; }
     }
 
-    /* ─── kicker labels (echoes STATUS/STACK/NEXT on landing) ─── */
-    .kicker {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.02em;
-      color: var(--ink-soft);
-      margin-bottom: 0.75rem;
-    }
-    .kicker .label {
-      color: var(--accent);
-      margin-right: 0.5rem;
-    }
-
-    /* ─── page heading ─── */
+    /* ─── page heading — override global h1 to a smaller display size ─── */
     .page-heading h1 {
-      font-family: 'Fraunces', Georgia, serif;
-      font-weight: 300;
-      font-size: clamp(2rem, 5.5vw, 3.25rem);
+      font-size: clamp(1.85rem, 4.5vw, 2.75rem);
       line-height: 1.05;
-      letter-spacing: -0.02em;
-    }
-    .page-heading h1 .italic {
-      font-style: italic;
-      color: var(--accent);
     }
 
     /* ─── prose ─── */
     .prose {
-      max-width: 52ch;
+      max-width: 56ch;
     }
     .prose p {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
       font-size: clamp(1rem, 1.4vw, 1.15rem);
       line-height: 1.65;
-      color: var(--ink-soft);
+      color: var(--ink);
     }
     .prose p + p {
       margin-top: 1rem;
     }
-    .prose a {
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px dotted var(--accent);
-      padding-bottom: 1px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .prose a:hover {
-      color: var(--ink);
-      border-bottom-color: var(--ink);
-    }
 
     /* ─── diagram ─── */
-    .diagram-figure {
-      margin: 0;
-      padding: 0;
-    }
+    .diagram-figure { margin: 0; padding: 0; }
 
     .diagram {
       width: 100%;
       height: auto;
       display: block;
-      color: var(--ink-soft); /* controls arrow strokes via currentColor */
+      color: var(--blue); /* controls arrow strokes via currentColor */
       overflow: visible;
     }
 
-    /* SVG child styles (using inline SVG so global classes apply) */
+    /* SVG child styles */
     .diagram .zone-label {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
       font-size: 10px;
       letter-spacing: 0.18em;
-      fill: var(--accent);
+      fill: var(--blue);
+      font-weight: 500;
     }
     .diagram .node-title {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
       font-size: 11px;
       letter-spacing: 0.08em;
-      fill: var(--ink);
+      fill: var(--blue);
       text-transform: uppercase;
+      font-weight: 500;
     }
     .diagram .node-title.accent {
-      fill: var(--accent);
+      fill: var(--blue);
     }
     .diagram .mono-small {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
       font-size: 10.5px;
-      fill: var(--ink-soft);
+      fill: var(--ink);
+      opacity: 0.75;
     }
     .diagram .edge-label {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
       font-size: 9.5px;
       letter-spacing: 0.03em;
-      fill: var(--ink-soft);
+      fill: var(--tan);
     }
     .diagram .edge-label.subtle {
       font-style: italic;
-      fill: var(--accent);
-      opacity: 0.75;
+      fill: var(--blue);
+      opacity: 0.85;
+      font-weight: 500;
     }
     .diagram .node-box {
-      fill: var(--paper-deep);
-      stroke: var(--rule);
+      fill: var(--paper-soft);
+      stroke: var(--tan);
       stroke-width: 1;
     }
     .diagram .accent-box {
-      stroke: var(--accent);
-      stroke-width: 1.25;
+      stroke: var(--blue);
+      stroke-width: 1.5;
+      fill: var(--paper);
     }
     .diagram .zone-divider {
-      stroke: var(--rule);
+      stroke: var(--tan);
       stroke-width: 1;
       stroke-dasharray: 2 4;
     }
@@ -322,49 +294,63 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       fill: none;
     }
     .diagram .artifact-line {
-      stroke: var(--accent);
-      stroke-width: 1;
-      stroke-dasharray: 1 4;
-      opacity: 0.5;
+      stroke: var(--maize);
+      stroke-width: 2;
+      stroke-dasharray: 2 5;
+      opacity: 0.9;
     }
 
     .diagram-figure figcaption {
       margin-top: 1.25rem;
-      max-width: 52ch;
-      font-family: 'Fraunces', Georgia, serif;
-      font-size: 0.95rem;
+      max-width: 56ch;
+      font-family: 'EB Garamond', Georgia, serif;
       font-style: italic;
-      color: var(--ink-soft);
+      font-size: 1rem;
+      color: var(--ink);
       line-height: 1.55;
+      opacity: 0.85;
     }
 
-    /* ─── stack list ─── */
+    /* ─── stack list — collegiate reading list feel ─── */
     .stack-list {
-      max-width: 58ch;
+      max-width: 62ch;
       display: flex;
       flex-direction: column;
       gap: 1.75rem;
     }
     .stack-item dt {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      font-size: 0.85rem;
-      letter-spacing: 0.02em;
-      color: var(--ink);
+      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      font-size: 0.9rem;
+      color: var(--blue);
       margin-bottom: 0.5rem;
     }
     .stack-item dt::before {
-      content: '› ';
-      color: var(--accent);
+      content: '§ ';
+      color: var(--maize);
+      -webkit-text-stroke: 0.4px var(--blue);
       margin-right: 0.15rem;
     }
     .stack-item dd {
-      font-family: 'Fraunces', Georgia, serif;
-      font-size: 1rem;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 1.05rem;
       line-height: 1.65;
-      color: var(--ink-soft);
+      color: var(--ink);
       margin: 0;
       padding-left: 1rem;
-      border-left: 1px solid var(--rule);
+      border-left: 2px solid var(--blue);
+      position: relative;
+    }
+    .stack-item dd::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 2px;
+      width: 1px;
+      background: var(--maize);
     }
 
     /* ─── responsive: below 640px, tighten the diagram's readability ─── */

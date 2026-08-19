@@ -1,0 +1,256 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+type Status = 'shipped' | 'in-progress' | 'seed';
+
+interface Project {
+  title: string;
+  dek: string;
+  status: Status;
+  year: string;
+  stack: string[];
+  links?: { label: string; href: string }[];
+}
+
+// Placeholder project list. Replace with real projects as they land.
+const projects: Project[] = [
+  {
+    title: 'pascalrhee.com',
+    dek: 'The site you\'re on. Astro + Cloudflare Workers with a small view-counter API in the same artifact.',
+    status: 'in-progress',
+    year: '2026',
+    stack: ['Astro', 'Cloudflare Workers', 'KV'],
+    links: [
+      { label: 'Colophon', href: '/about/' },
+      { label: 'Source', href: 'https://github.com/pascalrhee/pascalrhee.com' },
+    ],
+  },
+  {
+    title: '24-hour view counter',
+    dek: 'A Worker-plus-KV counter with hourly buckets and a 30-hour TTL. Renders as a hero-scale numeral on the front page.',
+    status: 'shipped',
+    year: '2026',
+    stack: ['Cloudflare Workers', 'KV', 'Vanilla JS'],
+    links: [
+      { label: 'See it live', href: '/' },
+    ],
+  },
+  {
+    title: 'Placeholder — next project',
+    dek: 'Something new is being sketched. When it\'s ready to be seen, it will appear here.',
+    status: 'seed',
+    year: 'TBD',
+    stack: ['?'],
+  },
+];
+
+const statusMeta: Record<Status, { label: string; className: string }> = {
+  'shipped':     { label: 'Shipped',     className: 'is-shipped' },
+  'in-progress': { label: 'In progress', className: 'is-in-progress' },
+  'seed':        { label: 'Seed',        className: 'is-seed' },
+};
+---
+<BaseLayout
+  title="Projects · Pascal Rhee"
+  description="Projects by Pascal Rhee — what's live, what's in flight, what's still a seed."
+  section="projects"
+>
+  <section class="content">
+    <p class="kicker">Projects · what's live, what's in flight</p>
+
+    <h1>The <span class="italic">workshop.</span></h1>
+
+    <p class="lede">
+      Things being built, things that shipped, and things still in the seed
+      stage. Not a portfolio in the résumé sense — more a record of what's
+      been made.
+    </p>
+
+    <ol class="project-list">
+      {projects.map((p) => (
+        <li class="project-row">
+          <div class="project-year">
+            <span class="project-year-num">{p.year}</span>
+          </div>
+          <div class="project-body">
+            <div class="project-head">
+              <h2 class="project-title">{p.title}</h2>
+              <span class={`project-status ${statusMeta[p.status].className}`}>
+                {statusMeta[p.status].label}
+              </span>
+            </div>
+            <p class="project-dek">{p.dek}</p>
+            <div class="project-meta">
+              <ul class="project-stack">
+                {p.stack.map((s) => <li>{s}</li>)}
+              </ul>
+              {p.links && p.links.length > 0 && (
+                <ul class="project-links">
+                  {p.links.map((l) => (
+                    <li><a href={l.href}>{l.label} →</a></li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <style>
+    .project-list {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--tan);
+      position: relative;
+    }
+    .project-row:first-child {
+      border-top: 2px solid var(--blue);
+    }
+    .project-row:first-child::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--maize);
+    }
+    .project-row:last-child {
+      border-bottom: 1px solid var(--tan);
+    }
+
+    .project-year {
+      padding-top: 0.35rem;
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      color: var(--blue);
+    }
+    .project-year-num {
+      display: block;
+    }
+
+    .project-head {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .project-title {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      font-size: 1.65rem;
+      line-height: 1.15;
+      color: var(--blue);
+      margin: 0;
+    }
+
+    .project-status {
+      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      font-size: 0.72rem;
+      padding: 0.05em 0.5em;
+    }
+    .project-status.is-shipped {
+      color: var(--blue);
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 32%,
+        transparent 32%
+      );
+    }
+    .project-status.is-in-progress {
+      color: var(--blue);
+      border: 1px solid var(--blue);
+      background: transparent;
+    }
+    .project-status.is-seed {
+      color: var(--tan);
+      font-style: italic;
+    }
+
+    .project-dek {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      line-height: 1.55;
+      color: var(--ink);
+      max-width: 56ch;
+      margin: 0 0 1rem;
+    }
+
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .project-stack {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .project-stack li {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: var(--tan);
+      padding: 0.15em 0.55em;
+      border: 1px solid var(--tan);
+    }
+
+    .project-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 1.25rem;
+    }
+    .project-links a {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--blue);
+      text-decoration: none;
+      border-bottom: 1px solid var(--tan);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .project-links a:hover {
+      border-bottom-color: var(--blue);
+      background: linear-gradient(
+        to top,
+        var(--maize) 0%,
+        var(--maize) 25%,
+        transparent 25%
+      );
+    }
+
+    @media (max-width: 640px) {
+      .project-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+      .project-year { padding-top: 0; }
+    }
+  </style>
+</BaseLayout>

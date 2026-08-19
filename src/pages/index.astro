@@ -4,20 +4,54 @@ import PageViewCounter from '../components/PageViewCounter.astro';
 ---
 <BaseLayout>
   <section class="content">
-    <h1>Pascal Rhee<br /><span class="italic">is building.</span></h1>
+    <p class="kicker">Volume I · Bulletin No. 001</p>
+
+    <h1>
+      A home base<br /><span class="italic">for the record.</span>
+    </h1>
 
     <p class="lede">
-      A personal site is going up here — a record of projects, a build log
-      of what's being learned, and the occasional thing worth reading.
-      <em>Coming together in public.</em>
+      A personal site — writing, projects, and whatever accumulates across the
+      years. Assembled deliberately, published <em>in the open</em>, and dated
+      like a program.
     </p>
 
     <PageViewCounter />
 
-    <div class="meta">
-      <span><span class="label">STATUS</span>domain claimed · under construction</span>
-      <span><span class="label">STACK</span>astro · cloudflare workers · claude code</span>
-      <span><span class="label">NEXT</span>real content</span>
-    </div>
+    <dl class="syllabus">
+      <div class="syllabus-row"><dt>Course</dt><dd>Pascal Rhee · dot com</dd></div>
+      <div class="syllabus-row"><dt>Term</dt><dd>Winter 2026 — indefinite</dd></div>
+      <div class="syllabus-row"><dt>Sections</dt><dd>Writing · Projects · Notes · About</dd></div>
+      <div class="syllabus-row"><dt>Instructor</dt><dd>Pascal, one commit at a time</dd></div>
+    </dl>
   </section>
+
+  <style>
+    .syllabus {
+      display: grid;
+      gap: 0.85rem 1.5rem;
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+      margin-top: 2rem;
+      max-width: 52ch;
+    }
+    .syllabus-row {
+      display: grid;
+      grid-template-columns: minmax(6.5rem, auto) 1fr;
+      gap: 1.5rem;
+      align-items: baseline;
+    }
+    .syllabus dt {
+      color: var(--maize);
+      -webkit-text-stroke: 0.4px var(--blue);
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .syllabus dd {
+      color: var(--ink);
+      margin: 0;
+    }
+  </style>
 </BaseLayout>
