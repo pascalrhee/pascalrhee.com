@@ -14,8 +14,8 @@
   (() => {
     const line = document.querySelector('[data-attendance]');
     const value = line?.querySelector('[data-attendance-value]');
-    const window = line?.querySelector('[data-attendance-window]');
-    if (!line || !value || !window) return;
+    const windowEl = line?.querySelector('[data-attendance-window]');
+    if (!line || !value || !windowEl) return;
 
     // Fire-and-forget: increment the current hour bucket.
     fetch('/api/track', { method: 'POST' }).catch(() => {});
@@ -29,7 +29,7 @@
           return;
         }
         value.textContent = String(count);
-        window.textContent = `past 24 hours · ${count === 1 ? '1 load' : count + ' loads'}`;
+        windowEl.textContent = `past 24 hours · ${count === 1 ? '1 load' : count + ' loads'}`;
         line.classList.add('is-ready');
       })
       .catch(() => {
