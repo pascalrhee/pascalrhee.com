@@ -215,7 +215,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       max-width: 56ch;
     }
     .prose p {
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-serif);
       font-weight: 400;
       font-size: clamp(1rem, 1.4vw, 1.15rem);
       line-height: 1.65;
@@ -238,14 +238,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     /* SVG child styles */
     .diagram .zone-label {
-      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 10px;
       letter-spacing: 0.18em;
       fill: var(--blue);
       font-weight: 500;
     }
     .diagram .node-title {
-      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 11px;
       letter-spacing: 0.08em;
       fill: var(--blue);
@@ -256,13 +256,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       fill: var(--blue);
     }
     .diagram .mono-small {
-      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 10.5px;
       fill: var(--ink);
       opacity: 0.75;
     }
     .diagram .edge-label {
-      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 9.5px;
       letter-spacing: 0.03em;
       fill: var(--tan);
@@ -303,7 +303,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .diagram-figure figcaption {
       margin-top: 1.25rem;
       max-width: 56ch;
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-serif);
       font-style: italic;
       font-size: 1rem;
       color: var(--ink);
@@ -319,7 +319,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       gap: 1.75rem;
     }
     .stack-item dt {
-      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-family: var(--font-sc);
       font-weight: 500;
       letter-spacing: 0.14em;
       font-size: 0.9rem;
@@ -333,7 +333,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       margin-right: 0.15rem;
     }
     .stack-item dd {
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-serif);
       font-weight: 400;
       font-size: 1.05rem;
       line-height: 1.65;
