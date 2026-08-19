@@ -12,12 +12,34 @@ Live at [pascalrhee.com](https://pascalrhee.com).
 
 ## Local development
 
+Two dev servers, and the difference matters:
+
 ```
 npm install
-npm run dev
+npm run dev        # Astro only, http://localhost:4321
 ```
 
-Dev server at `http://localhost:4321` with hot reload.
+`astro dev` serves the pages with hot reload but **does not run the Worker**, so
+`/api/track` and `/api/views` 404 and the view counter silently removes itself.
+Fine for typography and layout; wrong for anything touching the API.
+
+```
+npx wrangler dev --local    # full stack, http://localhost:8787
+```
+
+`wrangler dev` runs the Worker, the assets binding, and a local KV namespace, so
+the counter behaves as it does in production. `--local` keeps KV local and never
+touches the free-tier quota. Run `npm run build` first — it serves `dist/`.
+
+## Tests
+
+```
+npm run smoke
+```
+
+Builds, boots `wrangler dev --local`, and asserts on all five routes, both API
+endpoints, the bot filter, and a real KV round-trip. Node built-ins only, no
+dependencies, no network spend.
 
 ## Deploy
 
