@@ -1,0 +1,7 @@
+src/layouts/ProseLayout.astro:2:import BaseLayout from './BaseLayout.astro';
+src/pages/about.astro:2:import BaseLayout from '../layouts/BaseLayout.astro';
+src/pages/index.astro:2:import BaseLayout from '../layouts/BaseLayout.astro';
+src/pages/index.astro:3:import PageViewCounter from '../components/PageViewCounter.astro';
+src/pages/projects/index.astro:2:import BaseLayout from '../../layouts/BaseLayout.astro';
+src/pages/writing/index.astro:2:import BaseLayout from '../../layouts/BaseLayout.astro';
+src/pages/writing/first-look.astro:2:import ProseLayout from '../../layouts/ProseLayout.astro';

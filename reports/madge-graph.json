@@ -1,0 +1,11 @@
+{
+  "components/PageViewCounter.astro": [],
+  "layouts/BaseLayout.astro": [],
+  "layouts/ProseLayout.astro": [],
+  "pages/about.astro": [],
+  "pages/index.astro": [],
+  "pages/projects/index.astro": [],
+  "pages/writing/first-look.astro": [],
+  "pages/writing/index.astro": [],
+  "worker/index.ts": []
+}
