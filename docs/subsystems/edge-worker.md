@@ -13,29 +13,29 @@ export default {
   async fetch(request, env) { ... }
 } satisfies ExportedHandler<Env>
 ```
-`src/worker/index.ts:67-74`
+`src/worker/index.ts:66-73`
 
 Only `fetch` is exported. There is no `scheduled`, `queue`, `email`, or `tail`
-handler, so the Worker is purely request-driven (`src/worker/index.ts:67-74`).
+handler, so the Worker is purely request-driven (`src/worker/index.ts:66-73`).
 
 ## Routing
 
 | Match | Handler | Line |
 |---|---|---|
-| `url.pathname === "/api/track"` | `handleTrack(request, env)` | `src/worker/index.ts:70` |
-| `url.pathname === "/api/views"` | `handleViews(env)` | `src/worker/index.ts:71` |
-| anything else | `env.ASSETS.fetch(request)` | `src/worker/index.ts:72` |
+| `url.pathname === "/api/track"` | `handleTrack(request, env)` | `src/worker/index.ts:69` |
+| `url.pathname === "/api/views"` | `handleViews(env)` | `src/worker/index.ts:70` |
+| anything else | `env.ASSETS.fetch(request)` | `src/worker/index.ts:71` |
 
 Matching is exact string equality on `pathname` after `new URL(request.url)`
-(`src/worker/index.ts:69`) — no prefix matching, no trailing-slash tolerance, no
+(`src/worker/index.ts:68`) — no prefix matching, no trailing-slash tolerance, no
 method-based routing at the top level. `/api/track/` or `/api/views?x=1` behave
 differently from each other here: the query string is stripped by `pathname`, but
 a trailing slash is not, so `/api/track/` falls through to `ASSETS`.
 
 Method checking happens inside the handler, not the router — `handleTrack`
 returns `405 Method not allowed` for anything but POST
-(`src/worker/index.ts:43-45`). `handleViews` never checks the method at all
-(`src/worker/index.ts:56`), so `POST /api/views` returns the same JSON as GET.
+(`src/worker/index.ts:42-44`). `handleViews` never checks the method at all
+(`src/worker/index.ts:55`), so `POST /api/views` returns the same JSON as GET.
 
 ## The assets fallthrough
 
@@ -60,10 +60,10 @@ No secrets, no vars, no other bindings.
 ## Notable properties
 
 - **Unauthenticated write path.** `/api/track` is reachable by anyone and writes
-  to KV (`src/worker/index.ts:52`). The only gate is the User-Agent filter
-  (`src/worker/index.ts:46-48`). See `view-counter.md`.
+  to KV (`src/worker/index.ts:51`). The only gate is the User-Agent filter
+  (`src/worker/index.ts:45-47`). See `view-counter.md`.
 - **No error handling around KV.** A KV failure in either handler throws out of
-  `fetch` rather than degrading (`src/worker/index.ts:50-52`, `:58`). The client
+  `fetch` rather than degrading (`src/worker/index.ts:49-51`, `:58`). The client
   absorbs this by removing itself on any non-OK response
   (`src/components/PageViewCounter.astro:35-37`).
 - **`astro dev` does not run this file.** Local verification of anything API-shaped

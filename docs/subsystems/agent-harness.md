@@ -40,7 +40,7 @@ It also defines the session-records ritual and directs memory updates to
    live exposure: `/api/track` is unauthenticated and writes to KV against a
    1,000-writes/day cap, making any new write path a quota-exhaustion risk
    (`:55-59`). *(Note: `:55` says `/api/views`; the write path is actually
-   `/api/track` — `src/worker/index.ts:52`.)*
+   `/api/track` — `src/worker/index.ts:51`.)*
 3. **Delegate** (`:70-84`), passing summary + security outcome + `$ARGUMENTS`.
 4. **Relay** (`:86-95`) — the agent's briefing does not reach Pascal on its own.
 
@@ -91,10 +91,11 @@ changed this session" (`:119`), so a docs-only session skips it entirely.
 
 ## `AGENTS.md`
 
-Astro's own agent guidance (`AGENTS.md:1-22`) — recommends `astro dev
---background` (`:3-9`) and links seven Astro doc guides (`:15-22`). This is the
-file the wrap-up agent flags as stale (`.claude/agents/end-session.md:174`),
-because `astro dev` cannot exercise the Worker.
+Astro's own agent guidance, now split by what you are changing: `astro dev
+--background` for pages and styling, `npm run build && npx wrangler dev --local`
+for anything touching `/api/*`, plus `npm run smoke`. The staleness the wrap-up
+agent flags (`.claude/agents/end-session.md:174`) was fixed in slice 2 — `astro
+dev` no longer reads as the only local workflow.
 
 ## Permissions and editor config
 

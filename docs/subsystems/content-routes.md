@@ -40,11 +40,12 @@ The diagram splits into a BUILD TIME zone (`:59-86`) and a RUNTIME zone
 (`:91-128`) separated by a divider (`:89`), with a dashed "same artifact" line
 connecting `DIST/` to `env.ASSETS` across the boundary (`:131-132`).
 
-**This SVG duplicates the architecture it describes.** It hardcodes the KV key
-format (`:121`), the 30 h TTL and rolling-24 h window (`:122`), and the two API
-routes (`:108`, `:112`) — all of which are really defined in
-`src/worker/index.ts:4-5`, `:24-27`, `:70-71`. Changing the Worker without
-changing this SVG silently makes the page lie.
+**The SVG used to duplicate the architecture it describes** — it hardcoded the KV
+key format, the 30 h TTL, and the rolling-24 h window, so changing the Worker
+made the page lie. It now imports `KV_KEY_SHAPE`, `BUCKET_TTL_HOURS`, and
+`WINDOW_HOURS` from `src/lib/counter.ts` (`src/pages/about.astro:3`) and
+interpolates them (`:122-123`). The two API routes at `:109` and `:113` are still
+written out by hand, as are all node positions.
 
 ## `/writing/` — post index
 
@@ -79,5 +80,6 @@ Three entries: the site itself (`in-progress`), the view counter (`shipped`), an
 a `seed` placeholder (`:17-44`). Links are optional and conditionally rendered
 (`:87-93`). Two entries point at the public GitHub repo and `/about/` (`:24-25`).
 
-Like the about diagram, the copy here restates counter internals — "hourly buckets
-and a 30-hour TTL" (`:30`) — that actually live in `src/worker/index.ts:4-5`.
+The counter's TTL in the dek is interpolated from `BUCKET_TTL_HOURS`
+(`src/pages/projects/index.astro:3`, `:31`) rather than written out, for the same
+reason as the about diagram.

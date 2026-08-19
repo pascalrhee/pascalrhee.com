@@ -319,3 +319,65 @@ Plan only. No code written, no files touched besides this one.
 Answer Q1–Q3 and approve, and I'll start with Slice 0 — three sentences, the
 change, `npm run smoke` against unmodified `HEAD`, the full diff, then stop for
 your commit message.
+
+
+---
+
+## OUTCOME — all slices executed 2026-08-18
+
+Answers to the three gate questions: **Q1 = A** (Node-only, browser assertions
+left as an opt-in flag), **Q2 = split** into five, **Q3 = deferred**. Slices 0–9
+ran serially on branch `refactor-slices`, cut from `main`; each is its own commit.
+Slice 10 was not executed.
+
+| Slice | Result | Verification |
+|---|---|---|
+| 0 | `scripts/smoke.mjs` + one `package.json` line | 24/24 against unmodified HEAD; baseline recorded |
+| 1 | `--blue-deep`, `--rule` deleted | 24/24 |
+| 2 | README + AGENTS.md document the wrangler path | build |
+| 3 | `window` → `windowEl`, 3 sites | 24/24; page grew exactly 6 bytes = 3 × 2 chars |
+| 4 | 3 font tokens defined, 9 call sites in BaseLayout | 24/24; tokens present in built CSS |
+| 5 | 13 call sites in ProseLayout | 24/24; **framework assumption confirmed** |
+| 6 | 4 call sites, counter + landing | 24/24 |
+| 7 | 5 call sites, writing index | 24/24 |
+| 8 | 14 call sites, about + projects | 24/24 |
+| 9 | `src/lib/counter.ts`; Worker + 2 pages import it | 28/28; bundle 2.27 → 2.33 KiB |
+
+### What the plan got right
+
+**The framework assumption held.** Slice 5 was the test: `:root` tokens defined in
+BaseLayout's `is:global` block do reach Astro's scoped styles, because scoping adds
+attribute selectors rather than a shadow root. The built post page loads both
+stylesheets — `BaseLayout.css` with the definitions, `first-look.css` with 13
+references and none of its own. Slices 6–8 were safe to proceed.
+
+**Slice 9's risk (c) was real but landed harmless.** The interpolated SVG strings
+are byte-identical to the literals they replaced (`views:YYYY-MM-DDTHH`, `30`,
+`24`), so `/about/` rendered at exactly 9700 bytes before and after and the
+hand-positioned coordinates still fit.
+
+**Risk (a) was unfounded.** wrangler bundles the cross-directory
+`src/worker/` → `src/lib/` import without configuration.
+
+### Two departures from the plan
+
+1. **Slice 0 came in at 229 lines, over the 200-line cap.** The overrun is the
+   raw-socket no-UA request, which `fetch()` cannot send and which is the only
+   way to reach the fail-closed branch at `src/worker/index.ts:37`. Kept
+   deliberately: that branch protects the KV write quota.
+2. **Slice 9 also touched `scripts/smoke.mjs`**, outside its stated file list, to
+   add the units guard. The plan called for asserting `BUCKET_TTL_SECONDS ===
+   108000` rather than trusting arithmetic, and that assertion has to live in the
+   harness. It evaluates the module for real values rather than
+   pattern-matching source, and was negative-tested: replacing the seconds
+   conversion with a bare hours value drops the suite to 25/28.
+
+### Still open
+
+- **Slice 10** (consolidating three near-identical rise animations) is unexecuted
+  and still carries the same risk profile.
+- **Byte counts are printed, never asserted.** They caught two real signals here
+  (the 6-byte rename, the unchanged about page), but only because a human read
+  them.
+- **`PUBLIC_THRESHOLD` is still 0**, so the visibility gate the code implements is
+  inert. Untouched — that is a product decision, not a refactor.

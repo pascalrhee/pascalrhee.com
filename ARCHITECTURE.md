@@ -14,18 +14,19 @@ in this repository.
 
 | # | Entry point | Defined at | Triggered by |
 |---|---|---|---|
-| 1 | `default.fetch(request, env)` — the Worker | `src/worker/index.ts:67-74` | Every inbound HTTP request to the deployed Worker |
+| 1 | `default.fetch(request, env)` — the Worker | `src/worker/index.ts:66-73` | Every inbound HTTP request to the deployed Worker |
 | 2 | `/` | `src/pages/index.astro:1-57` | Build-time route → `dist/index.html` (**UNVERIFIED** — `dist/` is gitignored at `.gitignore:2`; filename convention inferred from Astro's static output) |
-| 3 | `/about/` | `src/pages/about.astro:1-365` | Build-time route |
+| 3 | `/about/` | `src/pages/about.astro:1-366` | Build-time route |
 | 4 | `/writing/` | `src/pages/writing/index.astro:1-204` | Build-time route |
 | 5 | `/writing/first-look/` | `src/pages/writing/first-look.astro:1-67` | Build-time route |
-| 6 | `/projects/` | `src/pages/projects/index.astro:1-256` | Build-time route |
-| 7 | `POST /api/track` | `src/worker/index.ts:70` → `src/worker/index.ts:42-54` | Inline browser script on any page rendering the counter (`src/components/PageViewCounter.astro:21`) |
-| 8 | `GET /api/views` | `src/worker/index.ts:71` → `src/worker/index.ts:56-65` | Same inline script (`src/components/PageViewCounter.astro:24`) |
+| 6 | `/projects/` | `src/pages/projects/index.astro:1-257` | Build-time route |
+| 7 | `POST /api/track` | `src/worker/index.ts:69` → `src/worker/index.ts:41-53` | Inline browser script on any page rendering the counter (`src/components/PageViewCounter.astro:21`) |
+| 8 | `GET /api/views` | `src/worker/index.ts:70` → `src/worker/index.ts:55-64` | Same inline script (`src/components/PageViewCounter.astro:24`) |
 | 9 | `npm run build` | `package.json:11` | Developer / deploy script |
 | 10 | `npm run deploy` | `package.json:13` — `astro build && wrangler deploy` | Developer, manually |
 | 11 | `npm run dev` | `package.json:9` — `astro dev` | Developer. Does **not** run the Worker, so `/api/*` is absent in this mode (`.claude/agents/end-session.md:109-115`) |
-| 12 | `/end-session` slash command | `.claude/commands/end-session.md:1-98` | Developer typing the command in Claude Code |
+| 12 | `npm run smoke` | `package.json:12` — `node scripts/smoke.mjs` | Developer, or any agent before proposing a Worker change |
+| 13 | `/end-session` slash command | `.claude/commands/end-session.md:1-98` | Developer typing the command in Claude Code |
 
 There is no `public/` directory and no separate static asset source — the only
 non-generated static asset is an inline SVG favicon data-URI at
@@ -39,14 +40,15 @@ non-generated static asset is an inline SVG favicon data-URI at
 
 | Module | Responsibility (one sentence) |
 |---|---|
-| `src/worker/index.ts` | The only server-side code: routes `/api/track` and `/api/views` to KV-backed handlers and delegates everything else to the static-assets binding (`src/worker/index.ts:67-74`). |
+| `src/worker/index.ts` | The only server-side code: routes `/api/track` and `/api/views` to KV-backed handlers and delegates everything else to the static-assets binding (`src/worker/index.ts:66-73`). |
+| `src/lib/counter.ts` | Single source of truth for the counter's window, TTL, and KV key shape, imported by the Worker at runtime and by `/about` and `/projects` at build time (`src/lib/counter.ts:9-24`). |
 | `src/components/PageViewCounter.astro` | Renders the "Attendance" counter markup, then an inline browser script fires the track call and paints the 24-hour total, removing itself on any failure (`src/components/PageViewCounter.astro:3-39`). |
 
 ### Page shells
 
 | Module | Responsibility |
 |---|---|
-| `src/layouts/BaseLayout.astro` | The global HTML document — head, fonts, the entire global stylesheet and design tokens, masthead, section nav, footer, and a `<slot />` for page content (`src/layouts/BaseLayout.astro:19-357`). |
+| `src/layouts/BaseLayout.astro` | The global HTML document — head, fonts, the entire global stylesheet and design tokens, masthead, section nav, footer, and a `<slot />` for page content (`src/layouts/BaseLayout.astro:19-359`). |
 | `src/layouts/ProseLayout.astro` | Wraps `BaseLayout` to add article chrome — date/reading-time kicker, title, dek, byline, and scoped typography for slotted prose (`src/layouts/ProseLayout.astro:26-59`). |
 
 ### Routes
@@ -77,9 +79,10 @@ non-generated static asset is an inline SVG favicon data-URI at
 | `.claude/agents/end-session.md` | Six-phase subagent definition for the end-of-session wrap-up ritual (`.claude/agents/end-session.md:22`, `:49`, `:83`, `:180`, `:262`, `:289`). |
 | `.claude/commands/end-session.md` | Slash command that writes the session summary, runs `/security-review`, then delegates to the agent (`.claude/commands/end-session.md:12`, `:34`, `:70`, `:86`). |
 | `CLAUDE.md` | Collaboration instructions — teaching altitude, decision protocol, free-tier cost constraint, session-record rules. |
-| `AGENTS.md` | Astro-specific agent guidance; recommends `astro dev --background` (`AGENTS.md:3-9`). |
+| `AGENTS.md` | Astro-specific agent guidance, split by task: `astro dev` for pages, `wrangler dev --local` for anything touching `/api/*`, plus `npm run smoke` (`AGENTS.md:1-32`). |
 | `plans/`, `journal/` | One file per session, `YYYY-MM-DD-short-slug.md`, shaped by `plans/TEMPLATE.md` and `journal/TEMPLATE.md`. |
 | `previews/index.html` | A 1508-line self-contained comparison of five rejected/accepted visual directions, kept as a design record (`previews/index.html:1007-1014`). |
+| `scripts/smoke.mjs` | The repo's only executable verification: builds, boots `wrangler dev --local`, and runs 28 assertions over every route, both API endpoints, the bot filter, the counter round-trip, and the shared constants (`scripts/smoke.mjs:1-247`). |
 | `.vscode/launch.json` | Debug config launching `astro dev` (`.vscode/launch.json:5`). |
 | `.claude/settings.local.json` | Local permission allowlist for git/gh Bash calls (`.claude/settings.local.json:2-12`). |
 
@@ -100,6 +103,7 @@ npm run build (package.json:11)
               ├── writing/index.astro:2 ───► layouts/BaseLayout.astro
               └── writing/first-look.astro:2 ──► layouts/ProseLayout.astro
                                                    └── ProseLayout.astro:2 ──► BaseLayout.astro
+        │     about.astro:3, projects/index.astro:3 ──► lib/counter.ts
         └── emits dist/   (UNVERIFIED — output dir is the Astro default; not
                            configured in astro.config.mjs and gitignored)
 ```
@@ -111,6 +115,7 @@ npm run deploy (package.json:13)
   ├── astro build            → dist/
   └── wrangler deploy        → reads wrangler.jsonc:1-15
         ├── bundles main: src/worker/index.ts   (wrangler.jsonc:5)
+        │     └── imports src/lib/counter.ts   (worker/index.ts:4)
         ├── uploads ./dist behind binding ASSETS (wrangler.jsonc:6-9)
         └── binds KV id a692e1e…c453ec as VIEWS_KV (wrangler.jsonc:10-15)
 ```
@@ -119,7 +124,7 @@ Runtime:
 
 ```
 Browser request
-  └── default.fetch (src/worker/index.ts:68)
+  └── default.fetch (src/worker/index.ts:67)
         ├── url.pathname === "/api/track"  (:70) ──► handleTrack (:42)
         │       ├── reject non-POST → 405            (:43-45)
         │       ├── isBotUA(User-Agent) → 204 no-op   (:46-48, :37-40)
@@ -150,30 +155,30 @@ Client (only on pages that mount PageViewCounter — currently just "/"):
 **The only persisted state in the system is the view counter.**
 
 - **Key shape:** `views:YYYY-MM-DDTHH`, derived by slicing the first 13 chars of a
-  UTC ISO string, so buckets are UTC hours (`src/worker/index.ts:24-27`).
-- **Value shape:** a base-10 integer string (`src/worker/index.ts:52`), parsed
+  UTC ISO string, so buckets are UTC hours (`src/worker/index.ts:23-26`).
+- **Value shape:** a base-10 integer string (`src/worker/index.ts:51`), parsed
   back with `parseInt(…, 10)` and defaulting to 0 when absent
-  (`src/worker/index.ts:51`, `:59`).
-- **TTL:** `(24 + 6) * 3600` = 108,000 s ≈ 30 h (`src/worker/index.ts:4-5`,
+  (`src/worker/index.ts:50`, `:59`).
+- **TTL:** `BUCKET_TTL_HOURS * 60 * 60` = 108,000 s ≈ 30 h (`src/lib/counter.ts:15-18`,
   applied at `:52`). The 6-hour margin means buckets outlive the read window.
 - **Read window:** `handleViews` builds exactly 24 keys by stepping back one hour
-  at a time from now and sums them (`src/worker/index.ts:29-35`, `:57-59`) — a
+  at a time from now and sums them (`src/worker/index.ts:28-34`, `:57-59`) — a
   rolling 24 h total, not a calendar day.
 - **Write pattern:** get-then-put with no compare-and-set, so concurrent requests
   landing in the same hour bucket can overwrite each other's increment
-  (`src/worker/index.ts:50-52`). Undercount, never overcount.
+  (`src/worker/index.ts:49-51`). Undercount, never overcount.
 - **Bot filtering:** ten case-insensitive UA regexes; a *missing* User-Agent is
-  also treated as a bot and skipped (`src/worker/index.ts:11-22`, `:37-40`).
-- **Visibility gate:** `PUBLIC_THRESHOLD` is `0` (`src/worker/index.ts:9`), and
+  also treated as a bot and skipped (`src/worker/index.ts:10-21`, `:37-40`).
+- **Visibility gate:** `PUBLIC_THRESHOLD` is `0` (`src/worker/index.ts:8`), and
   the check is `total >= PUBLIC_THRESHOLD` (`:60`), so `visible` is currently
   always `true`; the constant exists to be raised later (`:7-8`).
 - **Caching:** `/api/views` responses carry `Cache-Control: public, max-age=60`
-  (`src/worker/index.ts:63`). `/api/track` returns 204 with no body
+  (`src/worker/index.ts:62`). `/api/track` returns 204 with no body
   (`:47`, `:53`).
 
 No cookies, no sessions, no user identifiers, no request bodies are read
 anywhere — `handleTrack` never touches `request.body`
-(`src/worker/index.ts:42-54`). The counter counts page loads, not unique
+(`src/worker/index.ts:41-53`). The counter counts page loads, not unique
 visitors.
 
 Page content is not data-driven: post and project lists are literal arrays
@@ -215,8 +220,8 @@ source.
 
 The binding constraint is KV **writes**: every non-bot page load of `/` issues
 one `POST /api/track` (`src/components/PageViewCounter.astro:21`) which performs
-one `KV.put` (`src/worker/index.ts:52`). Each `GET /api/views` costs 24 KV reads
-(`src/worker/index.ts:58`). This is called out as the live exposure at
+one `KV.put` (`src/worker/index.ts:51`). Each `GET /api/views` costs 24 KV reads
+(`src/worker/index.ts:57`). This is called out as the live exposure at
 `.claude/commands/end-session.md:55-59`.
 
 ---
@@ -228,9 +233,10 @@ one `KV.put` (`src/worker/index.ts:52`). Each `GET /api/views` costs 24 KV reads
 - No `cron` / `triggers` / `queues` / `routes` keys in `wrangler.jsonc`
   (verified: the file is 15 lines, `wrangler.jsonc:1-15`).
 - The Worker exports only `fetch` — no `scheduled`, `queue`, `email`, or `tail`
-  handler (`src/worker/index.ts:67-74`).
+  handler (`src/worker/index.ts:66-73`).
 - No `.github/` directory exists, so there is no GitHub Actions CI, no scheduled
-  workflow, and no push-triggered deploy from this repository.
+  workflow, and no push-triggered deploy from this repository. `npm run smoke`
+  exists but nothing runs it automatically.
 - Deploys are manual: a human runs `npm run deploy` (`package.json:13`,
   `README.md:22-28`).
 
@@ -280,14 +286,14 @@ declarative rather than scheduled — keys self-delete ~30 h after their last wr
 **Behavior the code leaves ambiguous**
 
 6. Why is `PUBLIC_THRESHOLD` set to `0` when the surrounding code exists to hide
-   the number below a threshold (`src/worker/index.ts:7-9`)? Was a value chosen
+   the number below a threshold (`src/worker/index.ts:6-8`)? Was a value chosen
    and reverted, or never chosen?
 7. Is there any rate limiting or WAF rule in front of `POST /api/track`? The
-   Worker itself has none beyond the UA check (`src/worker/index.ts:42-54`), and
+   Worker itself has none beyond the UA check (`src/worker/index.ts:41-53`), and
    the endpoint is unauthenticated and writes to KV — the exact quota-exhaustion
    exposure named at `.claude/commands/end-session.md:55-58`. Any protection
    would be dashboard-side.
-8. Is the non-atomic get-then-put increment (`src/worker/index.ts:50-52`) an
+8. Is the non-atomic get-then-put increment (`src/worker/index.ts:49-51`) an
    accepted tradeoff or an unnoticed one? Nothing in the code says.
 9. `src/components/PageViewCounter.astro:17` binds a local `const window` that
    shadows the global inside the IIFE. Deliberate (the script never needs the

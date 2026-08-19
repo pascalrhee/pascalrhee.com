@@ -23,13 +23,20 @@ defaulting to `'home'`, used only to mark the current nav item.
 | Token | Value | Role |
 |---|---|---|
 | `--blue` | `#00274c` | Michigan blue; body text and rules |
-| `--blue-deep` | `#0d1929` | declared, unused elsewhere in `src/` |
 | `--maize` | `#ffcb05` | accent — highlights, hairlines, `§` marks |
 | `--paper` | `#f5f1e8` | page background |
 | `--paper-soft` | `#e8e2d2` | code/pre background |
 | `--tan` | `#8b7c5a` | secondary text, borders |
 | `--ink` | `#1a1a1a` | prose body text |
-| `--rule` | `#d7cfbc` | declared, unused elsewhere in `src/` |
+| `--font-serif` | `'EB Garamond', Georgia, serif` | body and display type |
+| `--font-sc` | `'EB Garamond SC', …` | small-caps labels, nav, kickers |
+| `--font-mono` | `'IBM Plex Mono', ui-monospace, monospace` | metadata, code, captions |
+
+All 45 `font-family` declarations across the seven `.astro` files resolve through
+those three tokens; the only literal stacks left in `src/` are the definitions
+themselves. Custom properties inherit from `:root` into Astro's scoped styles —
+scoping adds attribute selectors, not a shadow root — which is why a token
+defined here reaches `ProseLayout`'s and `about.astro`'s scoped rules.
 
 **Global styles** — the stylesheet is `is:global` (`:30`) and covers reset (`:42`),
 body texture via two fixed radial gradients (`:53-56`), the `main` grid capped at

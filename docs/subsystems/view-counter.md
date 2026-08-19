@@ -1,6 +1,6 @@
 # Subsystem — View Counter
 
-**Server:** `src/worker/index.ts:4-65` · **Client:** `src/components/PageViewCounter.astro`
+**Server:** `src/worker/index.ts:23-64` · **Constants:** `src/lib/counter.ts` · **Client:** `src/components/PageViewCounter.astro`
 · **Store:** `VIEWS_KV` (`wrangler.jsonc:10-15`)
 
 A rolling 24-hour page-load count. The only stateful feature on the site.
@@ -16,14 +16,20 @@ ttl:   108000 s ≈ 30 h
 ```
 
 - Key built by slicing the first 13 chars of `Date.toISOString()`
-  (`src/worker/index.ts:24-27`) — UTC hours, deliberately matching the ISO prefix.
-- TTL is `(WINDOW_HOURS + 6) * 60 * 60` (`src/worker/index.ts:4-5`), applied on
-  every write (`src/worker/index.ts:52`). The 6-hour margin keeps buckets alive
-  past the edge of the read window.
+  (`src/worker/index.ts:23-26`) — UTC hours, deliberately matching the ISO prefix.
+- TTL is `BUCKET_TTL_HOURS * 60 * 60` = 108,000 s (`src/lib/counter.ts:18`),
+  applied on every write (`src/worker/index.ts:51`). The 6-hour margin
+  (`src/lib/counter.ts:15`) keeps buckets alive past the edge of the read window.
+- `WINDOW_HOURS`, `BUCKET_TTL_HOURS`, `BUCKET_TTL_SECONDS`, and `KV_KEY_SHAPE`
+  live in `src/lib/counter.ts` and are imported by the Worker at runtime and by
+  `/about` and `/projects` at build time, so the diagram cannot drift from the
+  code. The smoke harness asserts the computed values (24, 30, 108000, and the
+  key shape) because an hours-vs-seconds mistake would pass every HTTP test and
+  silently discard the counter's history.
 
 ## Write path — `POST /api/track`
 
-`src/worker/index.ts:42-54`
+`src/worker/index.ts:41-53`
 
 1. Non-POST → `405` (`:43-45`).
 2. Bot UA → `204`, no write (`:46-48`).
@@ -37,7 +43,7 @@ an undercount.
 
 ## Read path — `GET /api/views`
 
-`src/worker/index.ts:56-65`
+`src/worker/index.ts:55-64`
 
 1. Build 24 keys by stepping back one hour at a time (`:57`, `:29-35`).
 2. `Promise.all` of 24 parallel `KV.get` calls (`:58`).
@@ -53,15 +59,15 @@ long before reads (100,000/day).
 
 Ten case-insensitive regexes — `bot`, `crawler`, `spider`, `curl`, `wget`,
 `python-requests`, `^Go-http-client`, `uptimerobot`, `pingdom`, `headlesschrome`
-(`src/worker/index.ts:11-22`).
+(`src/worker/index.ts:10-21`).
 
 A **missing** User-Agent counts as a bot and is skipped
-(`src/worker/index.ts:38`) — fail-closed, which protects the write quota at the
+(`src/worker/index.ts:37`) — fail-closed, which protects the write quota at the
 cost of dropping privacy-tool traffic.
 
 ## Visibility gate
 
-`PUBLIC_THRESHOLD = 0` (`src/worker/index.ts:9`) and the test is `total >= 0`
+`PUBLIC_THRESHOLD = 0` (`src/worker/index.ts:8`) and the test is `total >= 0`
 (`:60`), so `visible` is always `true` today. The comment at `:7-8` states the
 intent: raise it later to hide the number until it clears a floor. The client
 already honours it by deleting the whole element when `visible` is false

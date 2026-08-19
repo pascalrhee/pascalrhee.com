@@ -15,9 +15,10 @@ Two commands, one artifact, no CI.
 | `build` | `astro build` | Emits `dist/` |
 | `preview` | `astro preview` | Same limitation as `dev` |
 | `astro` | `astro` | CLI passthrough |
+| `smoke` | `node scripts/smoke.mjs` | Builds, boots `wrangler dev --local`, asserts 28 checks across all routes, both API endpoints, the bot filter, the counter round-trip, and the shared constants |
 | `deploy` | `astro build && wrangler deploy` | The only path to production |
 
-There is no `test`, `lint`, or `typecheck` script. `npx wrangler deploy --dry-run`
+There is no `lint` or `typecheck` script. `npx wrangler deploy --dry-run`
 is used as a bundle-validation gate instead (`.claude/agents/end-session.md:99-104`).
 
 ## Dependencies
