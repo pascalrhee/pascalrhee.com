@@ -1,6 +1,6 @@
 # Pascal's Personal Website
 
-A personal site being built with Astro on Cloudflare Workers with Assets (deployed via `wrangler`). The single `index.html` landing page has been migrated to an Astro layout + page; deploy pipeline is next.
+My personal site. Stack and deploy target live in `package.json` and `wrangler.jsonc` — read those rather than trusting a description here.
 
 ## This Is a Learning Project
 
@@ -123,7 +123,7 @@ If I'm wrestling with a decision and can't see the tradeoffs clearly:
 Auto-create and auto-populate these files. Do not wait to be asked.
 
 ### `journal/` — My Learning Journal
-One file per session, named `YYYY-MM-DD-short-slug.md`. Follow `journal/TEMPLATE.md`. Updated throughout the session as decisions and concepts come up. "Concepts Learned" is a running list of what we covered — no testing gate. "Still Fuzzy" is where things go when I flag them (or you flag them) as accepted without full confidence. "Notes & Examples" captures useful snippets or analogies as they come up.
+One file per session, named `YYYY-MM-DD-short-slug.md`. Follow `journal/TEMPLATE.md`. Updated throughout the session, not just at the end.
 
 ### `plans/` — Session Plans
 One file per session, named `YYYY-MM-DD-short-slug.md`. Follow `plans/TEMPLATE.md`. Auto-created at session start, auto-completed at session end. Factual record only — learnings go in the journal, not here.
