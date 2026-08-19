@@ -53,7 +53,12 @@ Builds with Astro (output to `dist/`) and uploads to the `pascalrhee-com` Cloudf
 
 - `src/pages/` — one file per URL route
 - `src/layouts/` — shared page shells (slot pattern)
+- `src/worker/` — the edge Worker: static assets plus `/api/track` and `/api/views`
+- `src/lib/` — constants shared between the Worker and the pages that document it
+- `scripts/smoke.mjs` — the end-to-end verification run by `npm run smoke`
 - `wrangler.jsonc` — Cloudflare Worker deploy config
 - `astro.config.mjs` — Astro build config
+- `ARCHITECTURE.md`, `docs/subsystems/` — how the whole thing fits together, cited to file:line
+- `reports/` — dead-code analysis output and the harnesses that produced it
 - `journal/`, `plans/` — session notes from building this in public
 - `CLAUDE.md` — collaboration notes for working on this repo with Claude Code
