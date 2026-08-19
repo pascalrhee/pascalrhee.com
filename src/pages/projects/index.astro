@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { BUCKET_TTL_HOURS } from '../../lib/counter';
 
 type Status = 'shipped' | 'in-progress' | 'seed';
 
@@ -27,7 +28,7 @@ const projects: Project[] = [
   },
   {
     title: '24-hour view counter',
-    dek: 'A Worker-plus-KV counter with hourly buckets and a 30-hour TTL. Renders as a hero-scale numeral on the front page.',
+    dek: `A Worker-plus-KV counter with hourly buckets and a ${BUCKET_TTL_HOURS}-hour TTL. Renders as a hero-scale numeral on the front page.`,
     status: 'shipped',
     year: '2026',
     stack: ['Cloudflare Workers', 'KV', 'Vanilla JS'],

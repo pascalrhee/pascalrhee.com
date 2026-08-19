@@ -1,8 +1,7 @@
 // Rolling 24h page-view counter.
 // Static asset requests are delegated to env.ASSETS; /api/* is handled here.
 
-const WINDOW_HOURS = 24;
-const BUCKET_TTL_SECONDS = (WINDOW_HOURS + 6) * 60 * 60;
+import { WINDOW_HOURS, BUCKET_TTL_SECONDS } from "../lib/counter";
 
 // Minimum count before the counter is shown publicly.
 // Flip > 0 later to hide the number until it's above a threshold.

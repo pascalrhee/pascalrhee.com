@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { KV_KEY_SHAPE, BUCKET_TTL_HOURS, WINDOW_HOURS } from '../lib/counter';
 ---
 <BaseLayout
   title="About · Pascal Rhee"
@@ -118,8 +119,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <!-- KV box (wide, under the two API branches) -->
           <rect x="70" y="348" width="285" height="72" rx="2" class="node-box" />
           <text x="82" y="371" class="node-title">VIEWS_KV</text>
-          <text x="82" y="391" class="mono-small">key: views:YYYY-MM-DDTHH</text>
-          <text x="82" y="408" class="mono-small">value: count · 30h TTL · rolling 24h</text>
+          <text x="82" y="391" class="mono-small">key: {KV_KEY_SHAPE}</text>
+          <text x="82" y="408" class="mono-small">value: count · {BUCKET_TTL_HOURS}h TTL · rolling {WINDOW_HOURS}h</text>
 
           <!-- ASSETS box -->
           <rect x="540" y="348" width="150" height="72" rx="2" class="node-box" />

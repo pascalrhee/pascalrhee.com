@@ -177,6 +177,24 @@ try {
   check('body has boolean visible', typeof vj.visible === 'boolean', `visible=${vj.visible}`);
   check('visible is true while PUBLIC_THRESHOLD is 0', vj.visible === true);
 
+  console.log('\n── shared counter constants (units guard) ──');
+  // src/lib/counter.ts carries no type syntax, so the real values can be
+  // computed here rather than pattern-matched. This is the guard against the
+  // one failure the HTTP tests cannot see: a 30s TTL instead of 30h would pass
+  // every assertion below and silently drop the counter's history.
+  const { readFileSync } = await import('node:fs');
+  const counterSrc = readFileSync(new URL('../src/lib/counter.ts', import.meta.url), 'utf8');
+  const counter = await import(
+    'data:text/javascript,' + encodeURIComponent(counterSrc.replace(/^\s*\/\*[\s\S]*?\*\//gm, ''))
+  );
+  check('WINDOW_HOURS is 24', counter.WINDOW_HOURS === 24, `${counter.WINDOW_HOURS}`);
+  check('BUCKET_TTL_HOURS is 30 (window + 6h margin)',
+    counter.BUCKET_TTL_HOURS === 30, `${counter.BUCKET_TTL_HOURS}`);
+  check('BUCKET_TTL_SECONDS is 108000 — seconds, not hours',
+    counter.BUCKET_TTL_SECONDS === 108000, `${counter.BUCKET_TTL_SECONDS}`);
+  check('KV_KEY_SHAPE matches the key hourBucketKey builds',
+    counter.KV_KEY_SHAPE === 'views:YYYY-MM-DDTHH', counter.KV_KEY_SHAPE);
+
   console.log('\n── routing semantics ──');
   const wrongMethod = await get('/api/track');
   check('GET /api/track → 405 (method check is in the handler)', wrongMethod.status === 405,
