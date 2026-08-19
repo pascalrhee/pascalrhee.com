@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# R console history (stray, never wanted here)
+.Rhistory
+**/.Rhistory
