@@ -1,0 +1,83 @@
+LINE COVERAGE — src/worker/index.ts (live workerd via wrangler dev, breakpoint-hit evidence)
+pause events: 1746   workload requests: 20
+legend: HIT n = executed n times | MISS = breakpoint never paused | (blank) = no breakpoint location
+
+  1        | // Rolling 24h page-view counter.
+  2        | // Static asset requests are delegated to env.ASSETS; /api/* is handled here.
+  3        | 
+  4 MISS   | const WINDOW_HOURS = 24;
+  5 MISS   | const BUCKET_TTL_SECONDS = (WINDOW_HOURS + 6) * 60 * 60;
+  6        | 
+  7        | // Minimum count before the counter is shown publicly.
+  8        | // Flip > 0 later to hide the number until it's above a threshold.
+  9 MISS   | const PUBLIC_THRESHOLD = 0;
+ 10        | 
+ 11 MISS   | const BOT_UA_PATTERNS: RegExp[] = [
+ 12        |   /bot/i,
+ 13        |   /crawler/i,
+ 14        |   /spider/i,
+ 15        |   /curl/i,
+ 16        |   /wget/i,
+ 17        |   /python-requests/i,
+ 18        |   /^Go-http-client/i,
+ 19        |   /uptimerobot/i,
+ 20        |   /pingdom/i,
+ 21        |   /headlesschrome/i,
+ 22        | ];
+ 23        | 
+ 24 MISS   | function hourBucketKey(when: Date): string {
+ 25        |   // "views:YYYY-MM-DDTHH" using the UTC hour, which matches the ISO string prefix.
+ 26 HIT392 |   return `views:${when.toISOString().slice(0, 13)}`;
+ 27        | }
+ 28        | 
+ 29 MISS   | function last24HourKeys(now: Date): string[] {
+ 30 HIT  4 |   const keys: string[] = [];
+ 31 HIT200 |   for (let i = 0; i < WINDOW_HOURS; i++) {
+ 32 HIT384 |     keys.push(hourBucketKey(new Date(now.getTime() - i * 60 * 60 * 1000)));
+ 33        |   }
+ 34 HIT  8 |   return keys;
+ 35        | }
+ 36        | 
+ 37 MISS   | function isBotUA(ua: string | null): boolean {
+ 38 HIT  6 |   if (!ua) return true;
+ 39 HIT100 |   return BOT_UA_PATTERNS.some((re) => re.test(ua));
+ 40        | }
+ 41        | 
+ 42 MISS   | async function handleTrack(request: Request, env: Env): Promise<Response> {
+ 43 HIT  8 |   if (request.method !== "POST") {
+ 44 HIT  6 |     return new Response("Method not allowed", { status: 405 });
+ 45        |   }
+ 46 HIT 18 |   if (isBotUA(request.headers.get("User-Agent"))) {
+ 47 HIT 12 |     return new Response(null, { status: 204 });
+ 48        |   }
+ 49 HIT  4 |   const key = hourBucketKey(new Date());
+ 50 HIT  4 |   const current = await env.VIEWS_KV.get(key);
+ 51 HIT  4 |   const next = (current ? parseInt(current, 10) : 0) + 1;
+ 52 HIT  6 |   await env.VIEWS_KV.put(key, String(next), { expirationTtl: BUCKET_TTL_SECONDS });
+ 53 HIT  6 |   return new Response(null, { status: 204 });
+ 54        | }
+ 55        | 
+ 56 MISS   | async function handleViews(env: Env): Promise<Response> {
+ 57 HIT  8 |   const keys = last24HourKeys(new Date());
+ 58 HIT204 |   const values = await Promise.all(keys.map((k) => env.VIEWS_KV.get(k)));
+ 59 HIT200 |   const total = values.reduce((sum, v) => sum + (v ? parseInt(v, 10) : 0), 0);
+ 60 HIT  4 |   const visible = total >= PUBLIC_THRESHOLD;
+ 61 HIT  8 |   return Response.json(
+ 62        |     { count: total, visible, threshold: PUBLIC_THRESHOLD },
+ 63        |     { headers: { "Cache-Control": "public, max-age=60" } },
+ 64 HIT  4 |   );
+ 65        | }
+ 66        | 
+ 67 MISS   | export default {
+ 68        |   async fetch(request: Request, env: Env): Promise<Response> {
+ 69 HIT 14 |     const url = new URL(request.url);
+ 70 HIT 38 |     if (url.pathname === "/api/track") return handleTrack(request, env);
+ 71 HIT 18 |     if (url.pathname === "/api/views") return handleViews(env);
+ 72 HIT  6 |     return env.ASSETS.fetch(request);
+ 73        |   },
+ 74        | } satisfies ExportedHandler<Env>;
+ 75        | 
+
+lines with breakpoint locations: 36
+lines with >=1 hit: 26
+line coverage: 72.2%

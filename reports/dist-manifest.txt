@@ -1,0 +1,8 @@
+dist/_astro/about.BESq9E7w.css
+dist/_astro/BaseLayout.D1QLpCuf.css
+dist/_astro/first-look.U_8OV7_j.css
+dist/about/index.html
+dist/index.html
+dist/projects/index.html
+dist/writing/first-look/index.html
+dist/writing/index.html

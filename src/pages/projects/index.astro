@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { BUCKET_TTL_HOURS } from '../../lib/counter';
 
 type Status = 'shipped' | 'in-progress' | 'seed';
 
@@ -27,7 +28,7 @@ const projects: Project[] = [
   },
   {
     title: '24-hour view counter',
-    dek: 'A Worker-plus-KV counter with hourly buckets and a 30-hour TTL. Renders as a hero-scale numeral on the front page.',
+    dek: `A Worker-plus-KV counter with hourly buckets and a ${BUCKET_TTL_HOURS}-hour TTL. Renders as a hero-scale numeral on the front page.`,
     status: 'shipped',
     year: '2026',
     stack: ['Cloudflare Workers', 'KV', 'Vanilla JS'],
@@ -133,7 +134,7 @@ const statusMeta: Record<Status, { label: string; className: string }> = {
 
     .project-year {
       padding-top: 0.35rem;
-      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 0.78rem;
       letter-spacing: 0.05em;
       color: var(--blue);
@@ -151,7 +152,7 @@ const statusMeta: Record<Status, { label: string; className: string }> = {
     }
 
     .project-title {
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-serif);
       font-weight: 500;
       font-size: 1.65rem;
       line-height: 1.15;
@@ -160,7 +161,7 @@ const statusMeta: Record<Status, { label: string; className: string }> = {
     }
 
     .project-status {
-      font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+      font-family: var(--font-sc);
       font-weight: 500;
       letter-spacing: 0.16em;
       font-size: 0.72rem;
@@ -186,7 +187,7 @@ const statusMeta: Record<Status, { label: string; className: string }> = {
     }
 
     .project-dek {
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-serif);
       font-size: 1.1rem;
       line-height: 1.55;
       color: var(--ink);
@@ -211,7 +212,7 @@ const statusMeta: Record<Status, { label: string; className: string }> = {
       gap: 0.5rem;
     }
     .project-stack li {
-      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 0.7rem;
       letter-spacing: 0.05em;
       color: var(--tan);
@@ -227,7 +228,7 @@ const statusMeta: Record<Status, { label: string; className: string }> = {
       gap: 1.25rem;
     }
     .project-links a {
-      font-family: 'EB Garamond', Georgia, serif;
+      font-family: var(--font-serif);
       font-style: italic;
       font-size: 0.95rem;
       color: var(--blue);

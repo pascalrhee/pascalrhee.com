@@ -30,13 +30,15 @@ const sections = [
     <style is:global>
       :root {
         --blue: #00274c;
-        --blue-deep: #0d1929;
         --maize: #ffcb05;
         --paper: #f5f1e8;
         --paper-soft: #e8e2d2;
         --tan: #8b7c5a;
         --ink: #1a1a1a;
-        --rule: #d7cfbc;
+
+        --font-serif: 'EB Garamond', Georgia, serif;
+        --font-sc: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+        --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
       }
 
       * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,7 +48,7 @@ const sections = [
       body {
         background: var(--paper);
         color: var(--blue);
-        font-family: 'EB Garamond', Georgia, serif;
+        font-family: var(--font-serif);
         font-weight: 400;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
@@ -109,7 +111,7 @@ const sections = [
         color: var(--maize);
         display: grid;
         place-items: center;
-        font-family: 'EB Garamond', Georgia, serif;
+        font-family: var(--font-serif);
         font-weight: 700;
         font-style: italic;
         font-size: 1.4rem;
@@ -117,7 +119,7 @@ const sections = [
       }
 
       .wordmark {
-        font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+        font-family: var(--font-sc);
         font-weight: 500;
         letter-spacing: 0.18em;
         font-size: 0.82rem;
@@ -125,7 +127,7 @@ const sections = [
       }
 
       .header-est {
-        font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+        font-family: var(--font-sc);
         font-weight: 400;
         letter-spacing: 0.22em;
         font-size: 0.68rem;
@@ -149,7 +151,7 @@ const sections = [
       }
 
       .site-nav a {
-        font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+        font-family: var(--font-sc);
         font-weight: 500;
         letter-spacing: 0.18em;
         font-size: 0.74rem;
@@ -194,7 +196,7 @@ const sections = [
 
       /* ─── Kicker: small-caps section label with maize § ─── */
       .kicker {
-        font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+        font-family: var(--font-sc);
         font-weight: 500;
         letter-spacing: 0.22em;
         font-size: 0.72rem;
@@ -210,7 +212,7 @@ const sections = [
 
       /* ─── Display type ─── */
       h1 {
-        font-family: 'EB Garamond', Georgia, serif;
+        font-family: var(--font-serif);
         font-weight: 500;
         font-size: clamp(2.5rem, 6vw, 4rem);
         line-height: 0.98;
@@ -234,7 +236,7 @@ const sections = [
 
       /* ─── Lede ─── */
       .lede {
-        font-family: 'EB Garamond', Georgia, serif;
+        font-family: var(--font-serif);
         font-weight: 400;
         font-size: clamp(1.05rem, 1.7vw, 1.2rem);
         line-height: 1.6;
@@ -276,7 +278,7 @@ const sections = [
         border-top: 2px solid var(--blue);
         margin-top: 2rem;
         position: relative;
-        font-family: 'EB Garamond SC', 'EB Garamond', Georgia, serif;
+        font-family: var(--font-sc);
         font-weight: 400;
         letter-spacing: 0.18em;
         font-size: 0.7rem;

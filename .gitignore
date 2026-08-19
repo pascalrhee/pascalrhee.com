@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # RStudio history
 .Rhistory
+
+# raw coverage dumps from dead-code analysis (regenerate with reports/harness-*.mjs)
+reports/*coverage*.json
