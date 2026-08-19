@@ -164,9 +164,11 @@ id in `wrangler.jsonc`, the Worker name, the compatibility date.
 Session work makes project docs stale. Check and update where the session made
 them wrong:
 
-- **`CLAUDE.md`** opens with a status sentence describing where the project is.
-  It currently ends "...deploy pipeline is next," which is already stale — the
-  site is live, with a counter and an `/about` page. Keep that sentence true.
+- **`CLAUDE.md`** opens with a sentence describing the project. Check it still
+  matches reality and doesn't restate what `package.json` / `wrangler.jsonc`
+  already say. Status claims there rot fast — this line has gone stale before.
+  **Propose changes to `CLAUDE.md`; don't edit it unasked.** It's Pascal's
+  instruction file, not project prose.
 - **`README.md`** documents local dev as `npm run dev` at port 4321. That's
   incomplete now that API routes exist — the same trap described above.
 - **`AGENTS.md`** likewise recommends `astro dev --background`.
