@@ -1,13 +1,87 @@
 ---
+import InteractiveHoverButton from '../../components/21st/InteractiveHoverButton.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WorkCards from '../../components/WorkCards.astro';
 ---
-<BaseLayout title="Work · Pascal Rhee" description="Public projects and experiments by Pascal Rhee, built with Astro and Cloudflare Workers." section="projects">
-  <header class="page-head"><p class="eyebrow">Selected public work</p><h1 class="display">Made to learn.<br /><em>Built to work.</em></h1><p class="lede">A growing collection of personal projects and small technical experiments. The source is open, and the work keeps evolving.</p></header>
-  <section class="page-section"><h2 class="sr-only">Public projects</h2><WorkCards /></section>
-  <section class="page-section detail-grid" aria-label="Project details">
-    <article class="detail" id="personal-site"><p class="section-label">01 / Personal website</p><h2 class="detail-title">One small home base.</h2><p>This site brings writing and projects into a single, deliberately lightweight place. Astro generates static HTML; Cloudflare Workers serves the assets from the edge.</p><p>Shared layouts keep the pages consistent. Responsive CSS, semantic markup, and a mostly static interface keep the experience simple across devices.</p><div class="pill-row"><span>Astro</span><span>HTML & CSS</span><span>Cloudflare Workers</span></div><p><a href="https://github.com/pascalrhee/pascalrhee.com">Explore the source <span class="arrow" aria-hidden="true"></span></a></p></article>
-    <article class="detail" id="edge-counter"><p class="section-label">02 / Edge-side experiment</p><h2 class="detail-title">A rolling view counter.</h2><p>A small API counts page loads in hourly buckets, with a 30-hour time to live. A read endpoint adds the latest 24 buckets into a rolling total.</p><p>It’s an experiment in keeping a small dynamic feature beside a static site. The illustration above is a schematic, not live traffic data. The API remains part of the project; this redesign keeps visitor counts out of the interface.</p><div class="pill-row"><span>TypeScript</span><span>Workers KV</span><span>REST API</span></div><p><a href="https://github.com/pascalrhee/pascalrhee.com/blob/main/src/worker/index.ts">Read the implementation <span class="arrow" aria-hidden="true"></span></a></p></article>
+
+<BaseLayout
+  title="Work · Pascal Rhee"
+  description="Public projects and experiments by Pascal Rhee, built with Astro and Cloudflare Workers."
+  section="projects"
+>
+  <header class="page-head">
+    <p class="eyebrow">Selected public work</p>
+    <h1 class="display">
+      Made to learn.
+      <br />
+      <em>Built to work.</em>
+    </h1>
+    <p class="lede">
+      A growing collection of personal projects and small technical experiments.
+      The source is open, and the work keeps evolving.
+    </p>
+  </header>
+  <section class="page-section">
+    <h2 class="sr-only">Public projects</h2>
+    <WorkCards />
   </section>
-  <section class="contact-panel"><div><h2>The professional side of the story.</h2><p>My background spans applied AI, commercial operations, and product.</p></div><a class="button" href="/about/">About my work <span class="arrow" aria-hidden="true"></span></a></section>
+  <section class="page-section detail-grid" aria-label="Project details">
+    <article class="detail" id="personal-site">
+      <p class="section-label">01 / Personal website</p>
+      <h2 class="detail-title">One small home base.</h2>
+      <p>
+        This site brings writing and projects into a single, deliberately
+        lightweight place. Astro generates static HTML; Cloudflare Workers
+        serves the assets from the edge.
+      </p>
+      <p>
+        Shared layouts keep the pages consistent. Responsive CSS, semantic
+        markup, and a mostly static interface keep the experience simple across
+        devices.
+      </p>
+      <div class="pill-row">
+        <span>Astro</span>
+        <span>HTML & CSS</span>
+        <span>Cloudflare Workers</span>
+      </div>
+      <p>
+        <a href="https://github.com/pascalrhee/pascalrhee.com">
+          Explore the source <span class="arrow" aria-hidden="true"></span>
+        </a>
+      </p>
+    </article>
+    <article class="detail" id="edge-counter">
+      <p class="section-label">02 / Edge-side experiment</p>
+      <h2 class="detail-title">A rolling view counter.</h2>
+      <p>
+        An earlier API counted page loads in hourly buckets, with a 30-hour time
+        to live. A read endpoint added the latest 24 buckets into a rolling
+        total.
+      </p>
+      <p>
+        This retired experiment explored keeping a small dynamic feature beside
+        a static site. The public API is now disabled, and the site no longer
+        collects visitor counts. The illustration above is a schematic, not live
+        traffic data.
+      </p>
+      <div class="pill-row">
+        <span>TypeScript</span>
+        <span>Workers KV</span>
+        <span>REST API</span>
+      </div>
+      <p>
+        <a href="https://github.com/pascalrhee/pascalrhee.com/blob/d123cf899263d020da55b1874cd19865960fe8dd/src/worker/index.ts">
+          Read the original implementation{' '}
+          <span class="arrow" aria-hidden="true"></span>
+        </a>
+      </p>
+    </article>
+  </section>
+  <section class="contact-panel">
+    <div>
+      <h2>The professional side of the story.</h2>
+      <p>My background spans applied AI, commercial operations, and product.</p>
+    </div>
+    <InteractiveHoverButton href="/about/" label="About my work" />
+  </section>
 </BaseLayout>

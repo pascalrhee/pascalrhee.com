@@ -1,0 +1,319 @@
+---
+// Actual Kokonut UI Background Paths geometry, adapted to Astro/SVG.
+// Copyright (c) 2025 kokonutUI. MIT; see vendor/21st/kokonut-ui/LICENSE.
+import { generateAestheticPath } from './background-paths';
+const groups = [
+  {
+    type: 'primary' as const,
+    count: 12,
+    opacity: 0.15,
+    step: 0.02,
+    width: 4,
+    widthStep: 0.3,
+  },
+  {
+    type: 'secondary' as const,
+    count: 15,
+    opacity: 0.12,
+    step: 0.015,
+    width: 3,
+    widthStep: 0.25,
+  },
+  {
+    type: 'accent' as const,
+    count: 10,
+    opacity: 0.08,
+    step: 0.12,
+    width: 2,
+    widthStep: 0.2,
+  },
+];
+---
+
+<figure
+  class="path-study"
+  aria-label="Interactive flowing paths. Move your pointer or scroll to change the perspective."
+>
+  <div class="study-caption">
+    <span>FIELD NOTES / 001</span>
+    <span>CONNECTED THINKING</span>
+  </div>
+  <div class="path-stage">
+    <div class="path-axis" aria-hidden="true">
+      <span>+</span>
+      <span>+</span>
+    </div>
+    <div class="path-perspective">
+      <svg
+        viewBox="-1800 -850 3600 1700"
+        fill="none"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="copper-paths" x1="0%" x2="100%" y1="0%" y2="0%">
+            <stop offset="0%" stop-color="#918a7c" />
+            <stop offset="50%" stop-color="#da976f" />
+            <stop offset="100%" stop-color="#eee5d5" />
+          </linearGradient>
+        </defs>
+        {[1, -1].map((position) =>
+          groups.map((group) => (
+            <g class={`wave-${group.type}`} opacity={position === 1 ? 1 : 0.45}>
+              {Array.from({ length: group.count }, (_, i) => (
+                <path
+                  d={generateAestheticPath(i, position, group.type)}
+                  stroke="url(#copper-paths)"
+                  stroke-linecap="round"
+                  stroke-width={group.width + i * group.widthStep}
+                  opacity={Math.min(1, group.opacity + i * group.step)}
+                />
+              ))}
+            </g>
+          )),
+        )}
+      </svg>
+    </div>
+    <div class="study-coordinate" aria-hidden="true">
+      01 — ∞<br />
+      <span>IDEAS INTO SYSTEMS</span>
+    </div>
+  </div>
+  <figcaption>
+    <span class="motion-hint">MOVE / SCROLL TO EXPLORE ↗</span>
+    <button type="button" class="motion-toggle" aria-pressed="false" hidden>
+      Pause motion
+    </button>
+  </figcaption>
+</figure>
+<script>
+  const figure = document.querySelector<HTMLElement>('.path-study');
+  const scene = figure?.querySelector<HTMLElement>('.path-perspective');
+  const button = figure?.querySelector<HTMLButtonElement>('button');
+  if (figure && scene && button) {
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    let reduced = media.matches,
+      paused = false,
+      visible = true,
+      frame = 0;
+    let px = 0,
+      py = 0,
+      tx = 0,
+      ty = 0;
+    const draw = () => {
+      const scroll = reduced
+        ? 0
+        : Math.max(
+            0,
+            Math.min(1, -figure.getBoundingClientRect().top / innerHeight),
+          );
+      scene.style.transform = `translate3d(${px * 18}px,${py * 18 - scroll * 38}px,0) rotateX(${-py * 9 + scroll * 10}deg) rotateY(${px * 12}deg) rotate(${16 + scroll * 8}deg) scale(1.14)`;
+    };
+    const tick = () => {
+      frame = 0;
+      if (!visible || document.hidden || paused || reduced) return;
+      px += (tx - px) * 0.075;
+      py += (ty - py) * 0.075;
+      draw();
+      if (Math.abs(tx - px) > 0.001 || Math.abs(ty - py) > 0.001)
+        frame = requestAnimationFrame(tick);
+    };
+    const schedule = () => {
+      if (!frame && visible && !document.hidden && !paused && !reduced)
+        frame = requestAnimationFrame(tick);
+    };
+    const sync = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      button.hidden = reduced;
+      button.textContent = paused ? 'Resume motion' : 'Pause motion';
+      button.setAttribute('aria-pressed', String(paused));
+      figure.dataset.still = String(
+        reduced || paused || !visible || document.hidden,
+      );
+      if (reduced) {
+        px = py = tx = ty = 0;
+        draw();
+      } else if (visible && !document.hidden && !paused)
+        frame = requestAnimationFrame(tick);
+    };
+    figure.addEventListener(
+      'pointermove',
+      (event) => {
+        if (reduced || paused) return;
+        const rect = figure.getBoundingClientRect();
+        tx = Math.max(
+          -1,
+          Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1),
+        );
+        ty = Math.max(
+          -1,
+          Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1),
+        );
+        schedule();
+      },
+      { passive: true },
+    );
+    const reset = () => {
+      tx = ty = 0;
+      schedule();
+    };
+    figure.addEventListener('pointerleave', reset);
+    figure.addEventListener('pointercancel', reset);
+    figure.addEventListener('pointerup', (event) => {
+      if (event.pointerType === 'touch') reset();
+    });
+    button.addEventListener('click', () => {
+      paused = !paused;
+      sync();
+    });
+    media.addEventListener('change', () => {
+      reduced = media.matches;
+      sync();
+    });
+    document.addEventListener('visibilitychange', sync);
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    }).observe(figure);
+    draw();
+    sync();
+  }
+</script>
+<style>
+  .path-study {
+    margin: 0;
+    min-width: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-block: 1px solid var(--line);
+  }
+  .study-caption,
+  .path-study figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font: 9px var(--mono);
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 19px 0;
+  }
+  .path-stage {
+    position: relative;
+    min-height: 380px;
+    flex: 1;
+    overflow: hidden;
+    perspective: 700px;
+    touch-action: pan-y;
+    background: radial-gradient(ellipse at 60% 55%, #da976f09, transparent 70%);
+  }
+  .path-perspective {
+    position: absolute;
+    inset: -15%;
+    transform: rotate(16deg) scale(1.14);
+    will-change: transform;
+  }
+  .path-perspective svg {
+    width: 100%;
+    height: 100%;
+  }
+  .wave-primary {
+    animation: path-drift 8s ease-in-out infinite alternate;
+  }
+  .wave-secondary {
+    animation: path-drift 6s ease-in-out infinite alternate;
+    opacity: 0.8;
+  }
+  .wave-accent {
+    animation: path-drift 4s ease-in-out infinite alternate;
+    opacity: 0.6;
+  }
+  @keyframes path-drift {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-30px);
+    }
+  }
+  .path-study[data-still='true'] g {
+    animation-play-state: paused;
+  }
+  .path-study[data-still='true'] .path-perspective {
+    will-change: auto;
+  }
+  .path-axis {
+    position: absolute;
+    inset: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    color: #69675f;
+    font: 16px var(--mono);
+  }
+  .path-axis span:last-child {
+    align-self: end;
+  }
+  .study-coordinate {
+    position: absolute;
+    left: 20px;
+    bottom: 24px;
+    font: 25px var(--serif);
+    color: var(--ink);
+  }
+  .study-coordinate span {
+    font: 8px var(--mono);
+    letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+  .motion-toggle {
+    padding: 7px 0 7px 10px;
+    min-height: 34px;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: 10px var(--mono);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .motion-toggle:hover {
+    color: var(--green);
+  }
+  @media (max-width: 720px) {
+    .path-stage {
+      min-height: 330px;
+    }
+    .study-caption,
+    .path-study figcaption {
+      padding-block: 15px;
+    }
+    .motion-hint {
+      font-size: 0;
+    }
+    .motion-hint:after {
+      content: 'TOUCH / SCROLL TO EXPLORE';
+      font-size: 9px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .path-study g {
+      animation: none;
+    }
+    .path-perspective {
+      will-change: auto;
+    }
+    .motion-hint {
+      font-size: 0;
+    }
+    .motion-hint:after {
+      content: 'STILL STUDY / REDUCED MOTION';
+      font-size: 9px;
+    }
+  }
+</style>

@@ -4,16 +4,16 @@
   "compatibility_date": "2026-08-17",
   "main": "src/worker/index.ts",
   "build": {
-    "command": "npm run build"
+    "command": "npm run verify:release",
   },
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
   "kv_namespaces": [
     {
       "binding": "VIEWS_KV",
-      "id": "a692e1e48f854fcb9514184fb2c453ec"
-    }
-  ]
+      "id": "a692e1e48f854fcb9514184fb2c453ec",
+    },
+  ],
 }

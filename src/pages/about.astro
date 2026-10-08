@@ -1,10 +1,144 @@
 ---
+import InteractiveHoverButton from '../components/21st/InteractiveHoverButton.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="About · Pascal Rhee" description="Pascal Rhee's background in data science, applied AI, commercial operations, and product management." section="about">
-  <header class="page-head"><p class="eyebrow">A little about me</p><h1 class="display">Technical depth.<br /><em>A wider lens.</em></h1><p class="lede">I’m Pascal, a data scientist with a background across applied AI, commercial operations, and product management.</p></header>
-  <section class="page-section two-col"><div><p class="section-label">01 / Background</p><h2 class="section-title">Working across<br /><em>the boundaries.</em></h2></div><div class="body-copy"><p>I work at the American Bureau of Shipping (ABS), where my experience spans the technical and business sides of building with AI.</p><p>Rotations through applied AI, commercial operations, and product management gave me different views of the same challenge: understanding what people need, figuring out what technology can do, and connecting the two.</p><p>Today, that work includes discovery, process analysis, solution architecture, prototypes, and technical demonstrations. I bring a data science foundation and a product perspective to the problems in front of me.</p><p>I graduated from the University of Michigan in May 2025 with a B.S. in Data Science and a minor in Entrepreneurship.</p></div></section>
-  <section class="page-section two-col"><div><p class="section-label">02 / Along the way</p><h2 class="section-title">Experience in<br /><em>perspective.</em></h2></div><ol class="history"><li><small>2025 — PRESENT</small><h3>American Bureau of Shipping</h3><p>Data Scientist. Experience across applied AI, commercial operations, product management, and internal AI enablement.</p></li><li><small>2024</small><h3>Nissan Motor Corporation</h3><p>Data Scientist Intern, Big Data Team. Applied language-model tooling to analysis workflows.</p></li><li><small>2023</small><h3>American Bureau of Shipping</h3><p>Data Science Intern, Data &amp; Analytics. Worked on enterprise data visualization.</p></li><li><small>CLASS OF 2025</small><h3>University of Michigan</h3><p>B.S. in Data Science · Minor in Entrepreneurship<br />Ann Arbor, Michigan</p></li></ol></section>
-  <section class="page-section two-col"><div><p class="section-label">03 / In the toolkit</p><h2 class="section-title">From questions<br /><em>to prototypes.</em></h2></div><div><div class="pill-row">{['Discovery','Technical demos','Python','SQL','APIs & integration','LLM applications','Azure','Power Platform','AWS','Power BI','Figma','Git'].map(skill=><span>{skill}</span>)}</div><p class="note">The tools depend on the problem. The constant is making the work understandable to the people who rely on it.</p></div></section>
-  <section class="contact-panel"><div><h2>Let’s compare notes.</h2><p>The best place to reach me is LinkedIn.</p></div><a class="button" href="https://www.linkedin.com/in/jprhee/">Say hello <span class="arrow" aria-hidden="true"></span></a></section>
+
+<BaseLayout
+  title="About · Pascal Rhee"
+  description="Pascal Rhee's background in data science, applied AI, commercial operations, and product management."
+  section="about"
+>
+  <header class="page-head">
+    <p class="eyebrow">A little about me</p>
+    <h1 class="display">
+      Technical depth.
+      <br />
+      <em>A wider lens.</em>
+    </h1>
+    <p class="lede">
+      I’m Pascal, a data scientist with a background across applied AI,
+      commercial operations, and product management.
+    </p>
+  </header>
+  <section class="page-section two-col">
+    <div>
+      <p class="section-label">01 / Background</p>
+      <h2 class="section-title">
+        Working across
+        <br />
+        <em>the boundaries.</em>
+      </h2>
+    </div>
+    <div class="body-copy">
+      <p>
+        I work at the American Bureau of Shipping (ABS), where my experience
+        spans the technical and business sides of building with AI.
+      </p>
+      <p>
+        Rotations through applied AI, commercial operations, and product
+        management gave me different views of the same challenge: understanding
+        what people need, figuring out what technology can do, and connecting
+        the two.
+      </p>
+      <p>
+        Today, that work includes discovery, process analysis, solution
+        architecture, prototypes, and technical demonstrations. I bring a data
+        science foundation and a product perspective to the problems in front of
+        me.
+      </p>
+      <p>
+        I graduated from the University of Michigan in May 2025 with a B.S. in
+        Data Science and a minor in Entrepreneurship.
+      </p>
+    </div>
+  </section>
+  <section class="page-section two-col">
+    <div>
+      <p class="section-label">02 / Along the way</p>
+      <h2 class="section-title">
+        Experience in
+        <br />
+        <em>perspective.</em>
+      </h2>
+    </div>
+    <ol class="history">
+      <li>
+        <small>2025 — PRESENT</small>
+        <h3>American Bureau of Shipping</h3>
+        <p>
+          Data Scientist. Experience across applied AI, commercial operations,
+          product management, and internal AI enablement.
+        </p>
+      </li>
+      <li>
+        <small>2024</small>
+        <h3>Nissan Motor Corporation</h3>
+        <p>
+          Data Scientist Intern, Big Data Team. Applied language-model tooling
+          to analysis workflows.
+        </p>
+      </li>
+      <li>
+        <small>2023</small>
+        <h3>American Bureau of Shipping</h3>
+        <p>
+          Data Science Intern, Data &amp; Analytics. Worked on enterprise data
+          visualization.
+        </p>
+      </li>
+      <li>
+        <small>CLASS OF 2025</small>
+        <h3>University of Michigan</h3>
+        <p>
+          B.S. in Data Science · Minor in Entrepreneurship
+          <br />
+          Ann Arbor, Michigan
+        </p>
+      </li>
+    </ol>
+  </section>
+  <section class="page-section two-col">
+    <div>
+      <p class="section-label">03 / In the toolkit</p>
+      <h2 class="section-title">
+        From questions
+        <br />
+        <em>to prototypes.</em>
+      </h2>
+    </div>
+    <div>
+      <div class="pill-row">
+        {[
+          'Discovery',
+          'Technical demos',
+          'Python',
+          'SQL',
+          'APIs & integration',
+          'LLM applications',
+          'Azure',
+          'Power Platform',
+          'AWS',
+          'Power BI',
+          'Figma',
+          'Git',
+        ].map((skill) => (
+          <span>{skill}</span>
+        ))}
+      </div>
+      <p class="note">
+        The tools depend on the problem. The constant is making the work
+        understandable to the people who rely on it.
+      </p>
+    </div>
+  </section>
+  <section class="contact-panel">
+    <div>
+      <h2>Let’s compare notes.</h2>
+      <p>The best place to reach me is LinkedIn.</p>
+    </div>
+    <InteractiveHoverButton
+      href="https://www.linkedin.com/in/jprhee/"
+      label="Say hello"
+    />
+  </section>
 </BaseLayout>

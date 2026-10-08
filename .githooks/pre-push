@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+export ASTRO_TELEMETRY_DISABLED=1
+
+# Tests apply to the working tree. Require it to match the exact pushed HEAD so
+# passing checks cannot accidentally certify different staged or local changes.
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Push blocked: commit or stash all changes before verification." >&2
+  exit 1
+fi
+head=$(git rev-parse HEAD)
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$local_sha" in
+    0000000000000000000000000000000000000000) continue ;;
+  esac
+  if [ "$local_sha" != "$head" ]; then
+    echo "Push blocked: check out the revision being pushed and verify it first." >&2
+    exit 1
+  fi
+done
+npm run verify:release

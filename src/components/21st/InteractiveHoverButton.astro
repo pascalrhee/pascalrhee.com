@@ -1,0 +1,140 @@
+---
+// Adapted from Magic UI / Dillion Verma, Interactive Hover Button (MIT).
+// Original source and full license: vendor/21st/magic-ui/.
+interface Props {
+  href: string;
+  label: string;
+  compact?: boolean;
+}
+const { href, label, compact = false } = Astro.props;
+---
+
+<a href={href} class:list={['interactive-button', { compact }]}>
+  <span class="button-original">
+    <span class="button-dot" aria-hidden="true"></span>
+    <span class="button-label">{label}</span>
+  </span>
+  <span class="button-reveal" aria-hidden="true">
+    <span>{label}</span>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+    >
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  </span>
+</a>
+<style>
+  .interactive-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    padding: 16px 23px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    isolation: isolate;
+    white-space: nowrap;
+    min-height: 48px;
+  }
+  .button-original {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+  }
+  .button-dot {
+    background: var(--green);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    position: relative;
+    z-index: -1;
+  }
+  .button-label {
+    display: inline-block;
+    transition:
+      transform 0.3s,
+      opacity 0.3s;
+  }
+  .button-reveal {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    color: var(--paper);
+    transform: translateX(48px);
+    opacity: 0;
+    transition:
+      transform 0.3s,
+      opacity 0.3s;
+  }
+  .interactive-button:hover {
+    text-decoration: none;
+  }
+  .interactive-button:is(:hover, :focus-visible) .button-dot {
+    transform: scale(100.8);
+  }
+  .interactive-button:is(:hover, :focus-visible) .button-label {
+    transform: translateX(48px);
+    opacity: 0;
+  }
+  .interactive-button:is(:hover, :focus-visible) .button-reveal {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  .compact {
+    padding: 11px 17px;
+    min-height: 42px;
+    font-size: 12px;
+  }
+  @media (hover: none) {
+    .button-dot {
+      width: 7px;
+      height: 7px;
+    }
+    .interactive-button:active {
+      background: var(--green);
+      color: var(--paper);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .button-dot,
+    .button-label,
+    .button-reveal {
+      transition: none;
+    }
+  }
+  @media (max-width: 720px) {
+    .compact {
+      padding: 0;
+      border: 0;
+      min-height: 30px;
+    }
+    .compact .button-original {
+      gap: 6px;
+    }
+    .compact .button-dot {
+      display: none;
+    }
+    .compact .button-reveal {
+      display: none;
+    }
+    .compact:is(:hover, :focus-visible) .button-label {
+      transform: none;
+      opacity: 1;
+      color: var(--green);
+    }
+  }
+</style>

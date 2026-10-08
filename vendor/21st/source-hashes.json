@@ -1,0 +1,22 @@
+{
+  "kokonut-ui/background-paths.tsx": {
+    "sha256": "a2b19a8ae00c0d74e27680ff6fd6410cac7d2bda60e9adcdc51cad66d1ed8fe9",
+    "gitBlob": "64c5b88b239046d5c2dce12d47dcce8982267e40"
+  },
+  "kokonut-ui/LICENSE": {
+    "sha256": "b2e018ad1fd564608cc1ee0c2ad675ce5202c8ed9f5f68e6d09e7b6bc881d5d2",
+    "gitBlob": "c5ec4f31444e458c6662d6fecd38c01b9afe42db"
+  },
+  "magic-ui/magic-card.tsx": {
+    "sha256": "6139e78ed228ebca18ed144f4a2714a89214c2ef604f1f82bc2f61204c3f3fa3",
+    "gitBlob": "3b022df0d33bbf21b05a386a56860c6ad887edb0"
+  },
+  "magic-ui/interactive-hover-button.tsx": {
+    "sha256": "ab16b3a2efea7fcc84a0eddeb7dad5304b403f89d22e056427fd3f905baaa0de",
+    "gitBlob": "6aab0d85a7869227b9602c6c0e6dcc84a15ede31"
+  },
+  "magic-ui/LICENSE.md": {
+    "sha256": "0147b84235ed916b8b4e89c1f80655351c5afe7d211b629be61f553a227b34ba",
+    "gitBlob": "30efc351ba9c469535dc012930ba6ee30c23f957"
+  }
+}

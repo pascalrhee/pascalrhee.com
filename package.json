@@ -7,15 +7,33 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/security-headers.mjs",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "check": "astro check",
+    "test": "node tests/worker.mjs && node tests/hero-motion.mjs && node tests/component-interactions.mjs",
+    "check:source": "node scripts/check-source.mjs",
+    "check:dist": "node scripts/check-dist.mjs",
+    "verify": "npm run format:check && npm run check:source && npm run check && npm run build && npm test && npm run check:dist",
+    "audit:dependencies": "npm audit --audit-level=high",
+    "verify:release": "npm run verify && npm run audit:dependencies",
+    "format": "prettier --write src tests scripts package.json tsconfig.json astro.config.mjs wrangler.jsonc .github .prettierrc.json",
+    "format:check": "prettier --check src tests scripts package.json tsconfig.json astro.config.mjs wrangler.jsonc .github .prettierrc.json",
+    "setup:hooks": "git config --local core.hooksPath .githooks"
   },
   "dependencies": {
-    "astro": "^7.2.2"
+    "astro": "^7.3.7"
   },
   "devDependencies": {
-    "wrangler": "^4.123.0"
+    "@astrojs/check": "^0.9.10",
+    "esbuild": "^0.28.2",
+    "prettier": "^3.9.9",
+    "prettier-plugin-astro": "^1.1.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.148.0"
+  },
+  "overrides": {
+    "sharp": "0.35.5"
   }
 }

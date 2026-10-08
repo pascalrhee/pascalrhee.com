@@ -1,35 +1,85 @@
 ---
 import '../styles/global.css';
-interface Props { title?: string; description?: string; section?: string }
-const { title = 'Pascal Rhee · Applied AI & solutions', description = 'Pascal Rhee is a data scientist working across applied AI, product, and business. University of Michigan alumnus. Building useful technology for real people.', section = 'home' } = Astro.props;
+import InteractiveHoverButton from '../components/21st/InteractiveHoverButton.astro';
+interface Props {
+  title?: string;
+  description?: string;
+  section?: string;
+}
+const {
+  title = 'Pascal Rhee · Applied AI & solutions',
+  description = 'Pascal Rhee is a data scientist working across applied AI, product, and business. University of Michigan alumnus. Building useful technology for real people.',
+  section = 'home',
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, 'https://pascalrhee.com');
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} /><meta name="theme-color" content="#151614" />
-    <link rel="canonical" href={canonical} /><link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta property="og:title" content={title} /><meta property="og:description" content={description} />
-    <meta property="og:type" content="website" /><meta property="og:url" content={canonical} />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#151614" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
     <title>{title}</title>
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
     <header class="site-header wrap">
-      <a class="wordmark" href="/" aria-label="Pascal Rhee, home"><span class="brand-icon" aria-hidden="true">p<span>r</span></span>Pascal Rhee<span class="wordmark-dot">.</span></a>
+      <a class="wordmark" href="/" aria-label="Pascal Rhee, home">
+        <span class="brand-icon" aria-hidden="true">
+          p<span>r</span>
+        </span>
+        Pascal Rhee<span class="wordmark-dot">.</span>
+      </a>
       <nav aria-label="Main navigation">
-        <a href="/projects/" aria-current={section === 'projects' ? 'page' : undefined}>Work</a>
-        <a href="/about/" aria-current={section === 'about' ? 'page' : undefined}>About</a>
-        <a href="/writing/" aria-current={section === 'writing' ? 'page' : undefined}>Writing</a>
-        <a class="nav-contact" href="https://www.linkedin.com/in/jprhee/">Let’s connect <span class="arrow" aria-hidden="true"></span></a>
+        <a
+          href="/projects/"
+          aria-current={section === 'projects' ? 'page' : undefined}
+        >
+          Work
+        </a>
+        <a
+          href="/about/"
+          aria-current={section === 'about' ? 'page' : undefined}
+        >
+          About
+        </a>
+        <a
+          href="/writing/"
+          aria-current={section === 'writing' ? 'page' : undefined}
+        >
+          Writing
+        </a>
+        <InteractiveHoverButton
+          href="https://www.linkedin.com/in/jprhee/"
+          label="Let’s connect"
+          compact
+        />
       </nav>
     </header>
-    <main id="main" class="wrap"><slot /></main>
+    <main id="main" class="wrap">
+      <slot />
+    </main>
     <footer class="site-footer wrap">
-      <a class="footer-name" href="/">Pascal Rhee<span>.</span></a>
+      <a class="footer-name" href="/">
+        Pascal Rhee<span>.</span>
+      </a>
       <p>A work in progress. Built with intention.</p>
-      <div><a href="https://github.com/pascalrhee/pascalrhee.com">Source <span class="arrow" aria-hidden="true"></span></a><span>© {new Date().getFullYear()}</span></div>
+      <div>
+        <a href="https://github.com/pascalrhee/pascalrhee.com">
+          Source <span class="arrow" aria-hidden="true"></span>
+        </a>
+        <span>© {new Date().getFullYear()}</span>
+      </div>
     </footer>
   </body>
 </html>

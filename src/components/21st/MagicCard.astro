@@ -1,0 +1,118 @@
+---
+// Adapted from Magic UI / Dillion Verma, Magic Card's gradient mode (MIT).
+// Original source and full license: vendor/21st/magic-ui/.
+interface Props {
+  href: string;
+  label?: string;
+}
+const { href, label } = Astro.props;
+---
+
+<a class="magic-card" href={href} aria-label={label}>
+  <span class="magic-surface" aria-hidden="true"></span>
+  <span class="magic-gradient" aria-hidden="true"></span>
+  <div class="magic-content">
+    <slot />
+  </div>
+</a>
+<script>
+  const cards = Array.from(
+    document.querySelectorAll<HTMLElement>('.magic-card'),
+  );
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const fine = matchMedia('(pointer: fine)');
+  const reset = (card: HTMLElement) => {
+    card.style.setProperty('--mouse-x', '-300px');
+    card.style.setProperty('--mouse-y', '-300px');
+  };
+  for (const card of cards) {
+    card.addEventListener(
+      'pointermove',
+      (event) => {
+        if (reduce.matches || !fine.matches || event.pointerType === 'touch')
+          return;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mouse-x', `${event.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${event.clientY - rect.top}px`);
+      },
+      { passive: true },
+    );
+    card.addEventListener('pointerleave', () => reset(card));
+    card.addEventListener('pointercancel', () => reset(card));
+  }
+  const resetAll = () => cards.forEach(reset);
+  window.addEventListener('blur', resetAll);
+  window.addEventListener('pointerout', (event) => {
+    if (!event.relatedTarget) resetAll();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) resetAll();
+  });
+  reduce.addEventListener('change', resetAll);
+  fine.addEventListener('change', resetAll);
+</script>
+<style>
+  .magic-card {
+    --mouse-x: -300px;
+    --mouse-y: -300px;
+    display: block;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--paper) 0 0) padding-box,
+      radial-gradient(
+          300px circle at var(--mouse-x) var(--mouse-y),
+          #e8c2a6,
+          #a8704f,
+          var(--line) 100%
+        )
+        border-box;
+  }
+  .magic-surface {
+    position: absolute;
+    inset: 1px;
+    background: var(--paper);
+    z-index: 0;
+  }
+  .magic-gradient {
+    pointer-events: none;
+    position: absolute;
+    inset: 1px;
+    z-index: 2;
+    background: radial-gradient(
+      300px circle at var(--mouse-x) var(--mouse-y),
+      #da976f18,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .magic-card:hover .magic-gradient {
+    opacity: 0.8;
+  }
+  .magic-content {
+    position: relative;
+    z-index: 1;
+  }
+  .magic-card:hover {
+    text-decoration: none;
+  }
+  .magic-card:focus-visible {
+    border-color: var(--green);
+    outline-offset: 5px;
+  }
+  @media (prefers-reduced-motion: reduce), (hover: none) {
+    .magic-gradient {
+      display: none;
+    }
+    .magic-card {
+      background: var(--paper);
+      border-color: var(--line);
+    }
+    .magic-card:is(:hover, :active) {
+      border-color: var(--green);
+    }
+  }
+</style>

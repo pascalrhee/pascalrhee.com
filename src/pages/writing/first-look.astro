@@ -1,18 +1,22 @@
 ---
 import ProseLayout from '../../layouts/ProseLayout.astro';
 ---
+
 <ProseLayout
   title="A first look at the new place"
   dek="What this site is, why it exists, and what it isn't."
   date="2026-08-17"
   readingTime="4 min"
 >
-  <p class="note">Archive note: this post describes the site as it was in August 2026. The design has since changed; the original text is preserved below.</p>
+  <p class="note">
+    Archive note: this post describes the site as it was in August 2026. The
+    design has since changed; the original text is preserved below.
+  </p>
   <p>
     This is a small, quiet corner of the internet — a place for writing,
-    projects, and whatever accumulates over the years. It began as a single
-    HTML file, then grew a build step, then a hosting story, then a view
-    counter, and now this: a page you can read.
+    projects, and whatever accumulates over the years. It began as a single HTML
+    file, then grew a build step, then a hosting story, then a view counter, and
+    now this: a page you can read.
   </p>
 
   <p>
@@ -42,9 +46,9 @@ import ProseLayout from '../../layouts/ProseLayout.astro';
   <p>
     The site is built with <a href="https://astro.build">Astro</a>, deployed as
     a Cloudflare Worker with static assets, and served from the edge. The view
-    counter you see on the front page is a small <code>KV</code>-backed API
-    that runs in the same Worker as the static site — <strong>one deploy, one
-    artifact, one thing to reason about.</strong>
+    counter you see on the front page is a small <code>KV</code>-backed API that
+    runs in the same Worker as the static site —{' '}
+    <strong>one deploy, one artifact, one thing to reason about.</strong>
   </p>
 
   <p>
@@ -57,12 +61,10 @@ import ProseLayout from '../../layouts/ProseLayout.astro';
   <h3>What's next</h3>
 
   <p>
-    A real first post — probably about the migration from a single HTML file
-    to Astro, which was the moment this project stopped being a novelty and
-    started being a habit.
+    A real first post — probably about the migration from a single HTML file to
+    Astro, which was the moment this project stopped being a novelty and started
+    being a habit.
   </p>
 
-  <p>
-    See you around.
-  </p>
+  <p>See you around.</p>
 </ProseLayout>
