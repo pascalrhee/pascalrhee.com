@@ -1,23 +1,101 @@
-<div class="system-art" role="img" aria-label="Three connected stages around an orbital diagram: discover, build, and adopt. A visual metaphor for turning a problem into a useful system.">
-  <div class="art-top" aria-hidden="true"><span>FROM QUESTION TO SYSTEM</span><span>FIG. 01</span></div>
-  <svg class="orbital" viewBox="0 0 500 458" aria-hidden="true">
-    <defs><radialGradient id="sphere"><stop stop-color="#dce7c0"/><stop offset=".7" stop-color="#c9d6aa"/><stop offset="1" stop-color="#b9c898"/></radialGradient><clipPath id="sphere-clip"><circle cx="250" cy="229" r="120"/></clipPath></defs>
-    <circle cx="250" cy="229" r="168" fill="none" stroke="#afbaa0" stroke-dasharray="2 5"/>
-    <path d="M65 229h370M250 49v360" stroke="#b8c1ab" stroke-width=".6"/>
-    <circle cx="250" cy="229" r="120" fill="url(#sphere)" stroke="#8ea476"/>
-    <g clip-path="url(#sphere-clip)" fill="none" stroke="#83996d" stroke-width=".7" opacity=".75">
-      {[22,48,75,100,118].map(rx=><ellipse cx="250" cy="229" rx={rx} ry="120"/>)}
-      {[-100,-80,-55,-28,0,28,55,80,100].map(offset=><ellipse cx="250" cy={229+offset} rx={Math.sqrt(14400-offset*offset)} ry={25*(1-Math.abs(offset)/160)}/>)}
-    </g>
-    <ellipse cx="250" cy="229" rx="183" ry="59" transform="rotate(-32 250 229)" fill="none" stroke="#35502f" stroke-width="1.2"/>
-    <ellipse cx="250" cy="229" rx="158" ry="83" transform="rotate(42 250 229)" fill="none" stroke="#6d8659" stroke-width=".7"/>
-    <circle cx="97" cy="326" r="5" fill="#315e31" stroke="#e6e9dc" stroke-width="4"/>
-    <circle cx="388" cy="141" r="5" fill="#315e31" stroke="#e6e9dc" stroke-width="4"/>
-    <circle cx="250" cy="61" r="3" fill="#315e31"/>
-    <path d="M247 226h6m-3-3v6" stroke="#315e31" stroke-width="1.3"/>
-  </svg>
-  <div class="art-label label-discover" aria-hidden="true"><span>01</span> Discover</div>
-  <div class="art-label label-build" aria-hidden="true"><span>02</span> Build</div>
-  <div class="art-label label-adopt" aria-hidden="true"><span>03</span> Adopt</div>
-  <div class="art-bottom" aria-hidden="true"><span>HUMAN CONTEXT × TECHNICAL DEPTH</span><span>ALWAYS ITERATING <span class="arrow" aria-hidden="true"></span></span></div>
-</div>
+---
+// Original implementation. Interaction inspiration: 21st.dev's Aether Ribbon Mesh.
+const loops = Array.from({ length: 32 }, (_, i) => i);
+---
+<figure class="kinetic" aria-label="An interactive wire sculpture. Move your pointer to turn it, or scroll to shift its perspective.">
+  <div class="kinetic-caption"><span>FIELD NOTES / 001</span><span>FORM & FUNCTION</span></div>
+  <div class="kinetic-stage">
+    <svg class="kinetic-fallback" viewBox="0 0 500 500" aria-hidden="true"><g transform="translate(250 250) rotate(-28)" fill="none" stroke="#b7ada0" stroke-width=".8">{loops.map(i => <ellipse rx={70 + i * 3} ry={160 - i * 2} transform={`rotate(${i * 5.625})`} />)}</g></svg>
+    <canvas aria-hidden="true"></canvas>
+    <span class="kinetic-cross cross-one" aria-hidden="true">+</span><span class="kinetic-cross cross-two" aria-hidden="true">+</span>
+  </div>
+  <figcaption><span class="motion-hint">MOVE TO EXPLORE ↗</span><button type="button" class="motion-toggle" aria-pressed="false" hidden>Pause motion</button></figcaption>
+</figure>
+<script>
+  const figure = document.querySelector<HTMLElement>('.kinetic');
+  const canvas = figure?.querySelector('canvas');
+  const ctx = canvas?.getContext('2d');
+  const button = figure?.querySelector<HTMLButtonElement>('button');
+  if (figure && canvas && ctx && button) {
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    let reduced = media.matches, paused = false, visible = true, frame = 0, last = 0, time = 0;
+    let width = 0, height = 0, px = 0, py = 0, tx = 0, ty = 0, scroll = 0;
+    const stage = canvas.parentElement!;
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      const scale = Math.min(width, height) / 395;
+      const ax = .72 + py * .65 + scroll * .32;
+      const ay = -.38 + px * .85;
+      const az = -.42 + time * .075 + scroll * .23;
+      const sinX = Math.sin(ax), cosX = Math.cos(ax), sinY = Math.sin(ay), cosY = Math.cos(ay), sinZ = Math.sin(az), cosZ = Math.cos(az);
+      for (let ring = 0; ring < 64; ring++) {
+        const u = ring / 64 * Math.PI * 2;
+        ctx.beginPath();
+        for (let j = 0; j <= 88; j++) {
+          const v = j / 88 * Math.PI * 2;
+          const r = 116 + 47 * Math.cos(v);
+          let x = r * Math.cos(u), y = r * Math.sin(u), z = 47 * Math.sin(v) + 17 * Math.sin(u * 3 + time * .22);
+          const y1 = y * cosX - z * sinX, z1 = y * sinX + z * cosX;
+          const x1 = x * cosY + z1 * sinY, z2 = -x * sinY + z1 * cosY;
+          const x2 = x1 * cosZ - y1 * sinZ, y2 = x1 * sinZ + y1 * cosZ;
+          const perspective = 620 / (620 + z2);
+          x = width / 2 + x2 * scale * perspective; y = height / 2 + y2 * scale * perspective;
+          if (j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        const bright = .43 + .42 * (Math.sin(u + ay) + 1) / 2;
+        ctx.strokeStyle = ring > 43 && ring < 51 ? `rgba(218,151,111,${bright + .15})` : `rgba(217,210,198,${bright})`;
+        ctx.lineWidth = ring > 43 && ring < 51 ? 1 : .75;
+        ctx.stroke();
+      }
+    };
+    const tick = (now: number) => {
+      frame = 0;
+      if (!visible || document.hidden || paused || reduced) return;
+      if (now - last >= 1000 / 30) {
+        time += Math.min((now - last) / 1000, .05); last = now;
+        px += (tx - px) * .09; py += (ty - py) * .09;
+        scroll = Math.max(0, Math.min(1, -figure.getBoundingClientRect().top / innerHeight));
+        draw();
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    const sync = () => {
+      cancelAnimationFrame(frame); frame = 0; last = performance.now();
+      button.textContent = paused ? 'Resume motion' : 'Pause motion';
+      button.setAttribute('aria-pressed', String(paused));
+      button.hidden = reduced;
+      if (reduced) { px = py = scroll = time = 0; draw(); }
+      else if (visible && !document.hidden && !paused) frame = requestAnimationFrame(tick);
+    };
+    const resize = () => {
+      width = stage.clientWidth; height = stage.clientHeight;
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); draw();
+    };
+    new ResizeObserver(resize).observe(stage);
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(figure);
+    document.addEventListener('visibilitychange', sync);
+    media.addEventListener('change', () => { reduced = media.matches; sync(); });
+    figure.addEventListener('pointermove', event => {
+      if (reduced || paused) return;
+      const box = figure.getBoundingClientRect();
+      tx = Math.max(-1, Math.min(1, (event.clientX - box.left) / box.width * 2 - 1));
+      ty = Math.max(-1, Math.min(1, (event.clientY - box.top) / box.height * 2 - 1));
+    }, { passive: true });
+    figure.addEventListener('pointerleave', () => { tx = ty = 0; });
+    figure.addEventListener('pointerup', event => { if (event.pointerType === 'touch') { tx = ty = 0; } });
+    button.addEventListener('click', () => { paused = !paused; sync(); });
+    figure.classList.add('is-ready'); resize(); sync();
+  }
+</script>
+<style>
+.kinetic{margin:0;position:relative;min-width:0;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kinetic-caption,.kinetic figcaption{display:flex;align-items:center;justify-content:space-between;gap:12px;font:9px var(--mono);letter-spacing:1px;color:var(--muted);padding:19px 0}
+.kinetic-stage{position:relative;min-height:380px;flex:1;touch-action:pan-y}
+.kinetic canvas,.kinetic-fallback{position:absolute;inset:0;width:100%;height:100%}.kinetic canvas{opacity:0}.kinetic.is-ready canvas{opacity:1}.kinetic.is-ready .kinetic-fallback{display:none}
+.kinetic-cross{position:absolute;color:#69675f;font:16px var(--mono)}.cross-one{top:10px;left:0}.cross-two{bottom:10px;right:0}
+.motion-toggle{padding:7px 0 7px 14px;min-height:34px;border:0;background:none;color:var(--ink);font:10px var(--mono);cursor:pointer;text-decoration:underline;text-underline-offset:4px}.motion-toggle:hover{color:var(--green)}
+@media(max-width:720px){.kinetic-stage{min-height:330px}.kinetic-caption,.kinetic figcaption{padding-block:15px}.motion-hint{font-size:0}.motion-hint:after{content:'TOUCH / SCROLL TO EXPLORE';font-size:9px}}
+@media(prefers-reduced-motion:reduce){.motion-hint{font-size:0}.motion-hint:after{content:'STILL STUDY / REDUCED MOTION';font-size:9px}}
+</style>
