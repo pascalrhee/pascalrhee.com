@@ -75,10 +75,10 @@ assert.ok(!html.includes('<canvas'), 'SVG fallback works without JavaScript');
 for (const href of [
   '/projects/',
   '/about/',
-  '/writing/',
   'https://www.linkedin.com/in/jprhee/',
 ])
   assert.ok(html.includes(`href="${href}"`));
+assert.ok(!html.includes('href="/writing/"'));
 console.log(
   'PASS: card pointer tracking/reset, reduced motion, coarse/touch input; built hero/card/button markup and navigation',
 );
