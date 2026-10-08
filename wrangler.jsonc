@@ -3,6 +3,9 @@
   "name": "pascalrhee-com",
   "compatibility_date": "2026-08-17",
   "main": "src/worker/index.ts",
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"

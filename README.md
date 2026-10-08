@@ -27,6 +27,13 @@ npm run deploy
 
 Builds with Astro (output to `dist/`) and uploads to the `pascalrhee-com` Cloudflare Worker via wrangler. Requires `wrangler login` first.
 
+Wrangler runs `npm run build` through the custom build command in `wrangler.jsonc`,
+so both `npm run deploy` and Cloudflare Workers Builds' `npx wrangler deploy`
+generate fresh static assets before upload. No separate dashboard build command
+is required.
+
+To check deployment packaging without publishing, run `npx wrangler deploy --dry-run`.
+
 ## Repo layout
 
 - `src/pages/` — one file per URL route
