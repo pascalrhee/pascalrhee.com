@@ -17,8 +17,9 @@ import WorkCards from '../../components/WorkCards.astro';
       <em>Built to work.</em>
     </h1>
     <p class="lede">
-      A growing collection of personal projects and small technical experiments.
-      The source is open, and the work keeps evolving.
+      A mix of live projects, personal experiments, and ideas I’m still
+      exploring. Each is a way to understand the tools and tradeoffs a little
+      better.
     </p>
   </header>
   <section class="page-section">
@@ -30,7 +31,7 @@ import WorkCards from '../../components/WorkCards.astro';
       <p class="section-label">01 / Personal website</p>
       <h2 class="detail-title">One small home base.</h2>
       <p>
-        This site brings writing and projects into a single, deliberately
+        This site brings my background and projects into a single, deliberately
         lightweight place. Astro generates static HTML; Cloudflare Workers
         serves the assets from the edge.
       </p>
@@ -51,11 +52,11 @@ import WorkCards from '../../components/WorkCards.astro';
       </p>
     </article>
     <article class="detail" id="edge-counter">
-      <p class="section-label">02 / Edge-side experiment</p>
+      <p class="section-label">02 / Edge computing experiment</p>
       <h2 class="detail-title">A rolling view counter.</h2>
       <p>
-        An earlier API counted page loads in hourly buckets, with a 30-hour time
-        to live. A read endpoint added the latest 24 buckets into a rolling
+        An earlier API counted page loads in hourly buckets, with a time to live
+        of 30 hours. A read endpoint added the latest 24 buckets into a rolling
         total.
       </p>
       <p>
@@ -76,6 +77,47 @@ import WorkCards from '../../components/WorkCards.astro';
         </a>
       </p>
     </article>
+  </section>
+  <section class="page-section" aria-labelledby="in-progress-title">
+    <div class="section-head">
+      <div>
+        <p class="section-label">03 / On my desk</p>
+        <h2 class="section-title" id="in-progress-title">
+          Building to <em>learn.</em>
+        </h2>
+      </div>
+      <p>Personal experiments and early ideas. These are works in progress.</p>
+    </div>
+    <div class="detail-grid">
+      <article class="detail" id="personal-assistant">
+        <p class="section-label">Experiment</p>
+        <h3>A personal AI assistant</h3>
+        <p>
+          An ongoing personal project exploring AI assistants and automation. A
+          practical way to learn how tools fit together and where automation
+          needs human judgment.
+        </p>
+        <div class="pill-row">
+          <span>AI assistants</span>
+          <span>Automation</span>
+          <span>Human judgment</span>
+        </div>
+      </article>
+      <article class="detail" id="simulation-games">
+        <p class="section-label">Exploring</p>
+        <h3>Simulation games grounded in real data</h3>
+        <p>
+          I’m exploring simulation game ideas grounded in published data. I’m
+          interested in how a small set of player decisions can reveal the
+          tradeoffs inside a complex system.
+        </p>
+        <div class="pill-row">
+          <span>Game ideas</span>
+          <span>Published data</span>
+          <span>Systems thinking</span>
+        </div>
+      </article>
+    </div>
   </section>
   <section class="contact-panel">
     <div>

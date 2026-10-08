@@ -4,7 +4,7 @@ Pascal Rhee’s personal website. Live at [pascalrhee.com](https://pascalrhee.co
 
 ## Architecture
 
-- Astro builds five static HTML routes; no React runtime, client framework, or public Astro server.
+- Astro builds three static HTML routes; no React runtime, client framework, or public Astro server.
 - Shared layouts and small Astro components, scoped component styles and a global design system.
 - Cloudflare Workers Assets serves the output. The Worker retires old `/api/*` routes with HTTP 410; it does not access KV. Existing KV data/binding is retained, untouched.
 - Fonts are self-hosted. Adapted UI components and their original MIT licenses/provenance are in `vendor/21st/`.
@@ -34,7 +34,7 @@ npx wrangler deploy --dry-run
 
 For each change, write acceptance criteria before implementation and record command results plus remaining limitations in the PR. UI changes additionally require desktop/mobile, keyboard navigation, reduced motion, JavaScript-disabled navigation and browser-console checks. Automated DOM checks are not a full accessibility audit or a substitute for visual review.
 
-GitHub Actions runs the same gate on PRs and main with read-only permissions. Branch protection is **not** configured by this repository. Make the `Verify / verify` check required via GitHub settings if you want server-enforced pre-merge protection. Run `npm run setup:hooks` once per clone to install the checked-in pre-push hook. It requires a clean tree, checks that the pushed revision is HEAD, and runs the release gate. Hooks can be bypassed; server-side branch protection remains the stronger control.
+GitHub Actions runs the same gate on PRs and main with read-only permissions. Main is protected: changes require a pull request, the GitHub Actions `verify` check, and an up-to-date branch. Admin bypass, force pushes, and branch deletion are disabled. Run `npm run setup:hooks` once per clone to install the checked-in pre-push hook. It requires a clean tree, checks that the pushed revision is HEAD, and runs the release gate. Hooks can be bypassed; server-side branch protection remains the stronger control.
 
 ## Deployment
 
@@ -46,7 +46,7 @@ npm run deploy
 
 Wrangler's custom build hook runs `npm run verify:release` before packaging/upload, including when Cloudflare invokes `npx wrangler deploy` directly. This prevents deployment after a failing gate rather than depending on a separate CI job to finish first. Do not bypass the custom build verification.
 
-After release, verify the exact remote commit, the Cloudflare build outcome, all five live routes, security headers, retired API status, and browser interactions. A successful local build or Git push alone is not deployment confirmation.
+After release, verify the exact remote commit, the Cloudflare build outcome, all three live routes and retired Writing redirects, security headers, retired API status, and browser interactions. A successful local build or Git push alone is not deployment confirmation.
 
 ## Dependency policy
 

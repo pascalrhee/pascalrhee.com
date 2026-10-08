@@ -16,8 +16,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <em>A wider lens.</em>
     </h1>
     <p class="lede">
-      I’m Pascal, a data scientist with a background across applied AI,
-      commercial operations, and product management.
+      I’m Pascal, a University of Michigan graduate working across data science,
+      applied AI, and the practical side of building useful things.
     </p>
   </header>
   <section class="page-section two-col">
@@ -41,10 +41,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         the two.
       </p>
       <p>
-        Today, that work includes discovery, process analysis, solution
-        architecture, prototypes, and technical demonstrations. I bring a data
-        science foundation and a product perspective to the problems in front of
-        me.
+        My current focus is internal AI enablement. I’m interested in the space
+        between a technical idea and something people can actually use:
+        understanding the problem, weighing the tradeoffs, and explaining the
+        solution clearly.
       </p>
       <p>
         I graduated from the University of Michigan in May 2025 with a B.S. in
@@ -63,7 +63,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
     <ol class="history">
       <li>
-        <small>2025 — PRESENT</small>
+        <small>2025 TO PRESENT</small>
         <h3>American Bureau of Shipping</h3>
         <p>
           Data Scientist. Experience across applied AI, commercial operations,
@@ -74,16 +74,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <small>2024</small>
         <h3>Nissan Motor Corporation</h3>
         <p>
-          Data Scientist Intern, Big Data Team. Applied language-model tooling
-          to analysis workflows.
+          Data Scientist Intern, Big Data Team. Worked on a survey analysis
+          pipeline using open source language models and cloud tooling.
         </p>
       </li>
       <li>
         <small>2023</small>
         <h3>American Bureau of Shipping</h3>
         <p>
-          Data Science Intern, Data &amp; Analytics. Worked on enterprise data
-          visualization.
+          Data Science Intern, Data &amp; Analytics. Worked on a Power BI data
+          lineage visualization to make relationships across data assets easier
+          to explore.
         </p>
       </li>
       <li>
@@ -107,28 +108,76 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </h2>
     </div>
     <div>
-      <div class="pill-row">
-        {[
-          'Discovery',
-          'Technical demos',
-          'Python',
-          'SQL',
-          'APIs & integration',
-          'LLM applications',
-          'Azure',
-          'Power Platform',
-          'AWS',
-          'Power BI',
-          'Figma',
-          'Git',
-        ].map((skill) => (
-          <span>{skill}</span>
-        ))}
+      <div class="tool-groups">
+        <div>
+          <h3>Used in work</h3>
+          <div class="pill-row">
+            {[
+              'Python',
+              'Power BI',
+              'AWS SageMaker',
+              'Hugging Face',
+              'LangChain',
+            ].map((tool) => (
+              <span>{tool}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h3>Personal building</h3>
+          <div class="pill-row">
+            {[
+              'Astro',
+              'Cloudflare Workers',
+              'GitHub',
+              'VS Code',
+              'Claude Code',
+            ].map((tool) => (
+              <span>{tool}</span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h3>Currently learning</h3>
+          <div class="pill-row">
+            {['Snowflake', 'SQL', 'Databricks'].map((tool) => (
+              <span>{tool}</span>
+            ))}
+          </div>
+        </div>
       </div>
       <p class="note">
-        The tools depend on the problem. The constant is making the work
-        understandable to the people who rely on it.
+        The tools depend on the problem. I use AI tools to move faster, while
+        staying able to explain and adapt what they produce.
       </p>
+    </div>
+  </section>
+  <section class="page-section two-col" aria-labelledby="beyond-work">
+    <div>
+      <p class="section-label">04 / Beyond work</p>
+      <h2 class="section-title" id="beyond-work">
+        A few other
+        <br />
+        <em>interests.</em>
+      </h2>
+    </div>
+    <div class="interest-list">
+      <article>
+        <h3>Pickleball</h3>
+        <p>I enjoy competitive pickleball.</p>
+      </article>
+      <article>
+        <h3>Pokémon cards</h3>
+        <p>I collect graded Pokémon cards.</p>
+      </article>
+      <article>
+        <h3>Games &amp; simulations</h3>
+        <p>
+          I play Overwatch and Bloons TD Battles 2. I’m also interested in games
+          that make complex systems tangible, and I’m exploring a few ideas of
+          my own.
+        </p>
+      </article>
     </div>
   </section>
   <section class="contact-panel">

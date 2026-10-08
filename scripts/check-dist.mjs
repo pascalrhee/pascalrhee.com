@@ -12,15 +12,17 @@ function walk(dir) {
 }
 const files = walk('dist');
 const pages = files.filter((path) => path.endsWith('.html'));
-const expected = [
-  'index.html',
-  'about/index.html',
-  'projects/index.html',
-  'writing/index.html',
-  'writing/first-look/index.html',
-];
+const expected = ['index.html', 'about/index.html', 'projects/index.html'];
 for (const page of expected)
   assert.ok(existsSync(join('dist', page)), `Missing route: ${page}`);
+assert.equal(pages.length, expected.length, 'Unexpected published HTML route');
+assert.ok(
+  !existsSync('dist/writing'),
+  'Removed Writing pages must not be published',
+);
+const redirects = readFileSync('dist/_redirects', 'utf8');
+assert.ok(redirects.includes('/writing /about/ 301'));
+assert.ok(redirects.includes('/writing/* /about/ 301'));
 const headers = readFileSync('dist/_headers', 'utf8');
 assert.ok(headers.includes("frame-ancestors 'none'"));
 assert.ok(headers.includes('X-Content-Type-Options: nosniff'));
@@ -30,6 +32,10 @@ let largest = 0;
 for (const path of pages) {
   const html = readFileSync(path, 'utf8');
   const route = '/' + path.replace(/^dist\//, '').replace(/index\.html$/, '');
+  assert.ok(
+    !/href="\/writing(?:\/|")/.test(html),
+    'Removed Writing navigation',
+  );
   assert.match(html, /<html[^>]+lang="en"/);
   assert.equal(
     (html.match(/<h1(?:\s|>)/g) || []).length,

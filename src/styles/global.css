@@ -1166,3 +1166,28 @@ nav {
 .magic-card:hover .mini-browser {
   transform: rotate(0deg) translateY(-5px);
 }
+
+.tool-groups {
+  display: grid;
+  gap: 26px;
+}
+.tool-groups h3,
+.interest-list h3 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+.interest-list {
+  display: grid;
+  gap: 25px;
+}
+.interest-list article {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 25px;
+}
+.interest-list p {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0;
+}
