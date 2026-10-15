@@ -23,7 +23,7 @@
     "setup:hooks": "git config --local core.hooksPath .githooks"
   },
   "dependencies": {
-    "astro": "^7.3.7"
+    "astro": "^7.3.8"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
